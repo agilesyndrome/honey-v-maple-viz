@@ -776,7 +776,13 @@ picker.addEventListener('keydown', e => {
   if (target) { e.preventDefault(); target.focus({preventScroll:true}); }
 });
 document.addEventListener('pointerdown', e => { if (!picker.contains(e.target)) closeCategory(false); });
-picker.addEventListener('focusout', e => { if (!picker.contains(e.relatedTarget)) closeCategory(false); });
+picker.addEventListener('focusout', e => {
+  // Safari can blur a button on tap without focusing the next button. A null
+  // relatedTarget must not hide the tapped option before its click arrives.
+  // Outside pointerdown already dismisses the menu; Tab supplies a new target.
+  if (e.relatedTarget && !picker.contains(e.relatedTarget)) closeCategory(false);
+});
+window.addEventListener('blur', () => closeCategory(false));
 document.querySelectorAll('.hm-chip').forEach(function (chip) {
   chip.addEventListener('click', function () { setFilter(chip.dataset.cat); closeCategory(true); });
 });

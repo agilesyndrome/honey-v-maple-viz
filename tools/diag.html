@@ -60,8 +60,17 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   check('category menu initially closed', () => $('#hm-category-menu').hidden);
   click($('#hm-category'));
   check('category menu opens', () => !$('#hm-category-menu').hidden && $('#hm-category').getAttribute('aria-expanded') === 'true');
+  // Touch browsers may blur the current option without focusing the next one.
+  d.activeElement.blur();
+  check('menu survives focus loss during a tap', () => !$('#hm-category-menu').hidden);
+  click($('.hm-chip[data-cat="coffee"]'));
+  check('tap selects Coffee and closes menu', () => w.HM.filter() === 'coffee' && $('#hm-category-menu').hidden);
+  click($('#hm-category'));
+  check('reopening retains selected category', () => d.activeElement.dataset.cat === 'coffee');
   $('#hm-category-menu').dispatchEvent(new w.KeyboardEvent('keydown', {key:'Escape', bubbles:true}));
   check('Escape closes category menu and restores focus', () => $('#hm-category-menu').hidden && d.activeElement === $('#hm-category'));
+  click($('.hm-chip[data-cat="all"]'));
+  await sleep(1100);
   check('removed: week/ledger/footer/replay', () =>
     !$('.hm-week') && !$('.hm-ledger') && !$('.hm-foot') && !d.getElementById('hm-replay'));
   check('removed: footer prose gone', () =>

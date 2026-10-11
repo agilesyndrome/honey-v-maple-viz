@@ -1,5 +1,8 @@
 # Honey ✕ Maple — Two Homes, One Circle 🍁🍯
 
+[Repository](https://github.com/agilesyndrome/honey-v-maple-viz) ·
+[Live site](https://agilesyndrome.github.io/honey-v-maple-viz/)
+
 A single-file, zero-dependency data visualization comparing how far everyday
 life sits from **our front door in Toronto** (where we walk or take transit) versus
 **our front door in Raleigh** (where we drive everywhere).
