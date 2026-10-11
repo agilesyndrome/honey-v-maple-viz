@@ -110,7 +110,7 @@ svg.hm-live .hm-anf, svg.hm-live .hm-pre-fade{transition:opacity .3s ease; trans
 .hm-option-icon{display:flex;align-items:center;justify-content:center;flex:none;width:18px}
 .hm-option-check{margin-left:auto;opacity:0;color:var(--honey-soft)}
 .hm-chip[aria-pressed="true"] .hm-option-check{opacity:1}
-.hm-seg button:focus-visible,.hm-chip:focus-visible,.hm-picker-trigger:focus-visible,.hm-ptg:focus-visible,.hm-zoom button:focus-visible{outline:2px solid var(--honey);outline-offset:3px}
+.hm-seg button:focus-visible,.hm-chip:focus-visible,.hm-picker-trigger:focus-visible,.hm-zoom button:focus-visible{outline:2px solid var(--honey);outline-offset:3px}
 @keyframes hm-menu-in{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
 
 /* ---------- city cards ---------- */
@@ -176,6 +176,8 @@ svg .hm-ptg{cursor:pointer; outline:none; transition:opacity .3s}
 svg .hm-pathg{transition:opacity .3s}
 svg .hm-ptg .hm-core, svg .hm-ptg .hm-glow{transition:opacity .3s}
 svg .hm-ptg.pinned .hm-glow{opacity:.32}
+/* This halo lives in the inverse-scaled dot group, so zoom never enlarges focus. */
+svg .hm-ptg:focus-visible .hm-glow{fill:none;stroke:var(--ink);stroke-width:2;opacity:1}
 svg .hm-hid{visibility:hidden}
 svg .hm-off{opacity:.15}
 svg .hm-ghost{pointer-events:none; opacity:0; transition:opacity .35s}

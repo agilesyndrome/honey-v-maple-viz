@@ -216,6 +216,8 @@ def build_hm(raw: dict) -> dict:
                         f"straight-line from home, about {timing['minutes']} minutes {mode_word}."),
             "note": s["note"],
         }
+        if s.get("chartName"):
+            stop["chartName"] = s["chartName"]
         if s.get("status"):
             stop["status"] = s["status"]
         stops.append(stop)

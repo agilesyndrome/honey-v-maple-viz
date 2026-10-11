@@ -33,11 +33,11 @@ The comparison (calculated straight-line radii, plus user-supplied school and Me
 
 | Category | Toronto | Raleigh | Distance gap |
 |---|---|---|---|
-| Coffee | Misc Coffee — 0.7 km | Black & White 6.7 · Jubala 7.5 · Sola 10.2 km | **×11.6** |
-| Shopping | Walmart 1.1 · IKEA 3.3 · Metro 0.7 km | Food Lion 1.1 · Target 4.5 km | **×1.6** |
+| Coffee | Misc 0.7 · Knife 0.9 · Boxcar Social 1.2 km | Black & White 6.7 · Jubala 7.5 · Sola 10.2 km | **×8.9** |
+| Shopping | Walmart 1.1 · IKEA 3.3 · Metro 0.7 km | Food Lion 1.1 · Sam’s Club 3.3 · Target 4.5 km | **×1.7** |
 | Daily Life | Harbourfront Centre 3.6 · Middle School 1.2 km | Middle School 0.7 km | **×0.3** |
-| Date Night | And/Ore 0.9 km | Mandolin 16.6 km (closed) | **×18.8** |
-| Fun & Games | Royal Ontario Museum 2.9 km | Science Museum 18.8 km | **×6.5** |
+| Date Night | And/Ore 0.9 · Richmond Station 3.5 · O. Noir 3.8 km | Mandolin 16.6 (closed) · Tower Escape Room 19.1 · DPAC 30.4 km | **×8.1** |
+| Fun & Games | Royal Ontario Museum 2.9 · Activate 4.4 km | Strike & Barrel 6.7 · Science Museum 18.8 km | **×3.5** |
 
 No addresses are displayed or stored — only names. See `skill.md` for the
 full design rationale and conventions.
@@ -88,6 +88,14 @@ zooming or filtering never changes how you travel.
 | Middle School | walk | 15 |
 | Metro | walk | 7 |
 | Royal Ontario Museum | transit | 35 |
+| Boxcar Social (Laneway) | walk | 20 |
+| Knife | walk | 10 |
+| O. Noir | transit | 45 |
+| Richmond Station | transit | 25 |
+| Activate (Stockyards) | transit | 50 |
+
+New Raleigh stops use driving: Sam’s Club **5 min**, Tower Escape Room **30 min**,
+Durham Performing Arts Center **35 min**, and Strike & Barrel **10 min**.
 
 Raleigh keeps its original driving estimates, adds Science Museum at approximately
 30 minutes driving, and makes Middle School an explicit walking exception:
@@ -109,6 +117,17 @@ all are rounded to **35 minutes**. Science Museum means the NC Museum of
 Natural Sciences downtown. Google Maps returned **30 minutes driving** from
 Food Lion at Crenshaw Corners, a public northern-area proxy. The ROM and
 science museum radii still use the existing home coordinates locally.
+The nine October additions use the same public origins. Observed Google Maps
+walks were 20 minutes to Boxcar Social and 7 to Knife; transit trips were
+43 to O. Noir, 27 to Richmond Station, and 48 to Activate. Raleigh drives
+were 6 minutes to Sam’s Club, 30 to Tower Escape Room, 35 to DPAC, and 9 to
+Strike & Barrel. Each is rounded to the nearest 5 minutes. Destination
+coordinates are taken from the verified Google Maps place endpoints;
+straight-line radii are calculated locally from the existing home dot.
+Proxy route lengths remain provenance only, never displayed as home routes.
+DPAC uses a compact chart label; tooltips and accessibility labels retain the
+full Durham Performing Arts Center name.
+
 Per-stop `travel.source` records provider, lookup date, public origin, and
 observed minutes. These are representative snapshots, not live arrivals or
 exact trips from the home dot. Departure time and service can change them.
@@ -176,7 +195,7 @@ strips `<script>` tags from non-admin content, so this needs the
 
 ## Data provenance
 
-- Locations geocoded from real coordinates via OpenStreetMap (Nominatim);
+- Original locations geocoded via OpenStreetMap (Nominatim), with new venues verified on Google Maps and official venue pages;
   closed venues keep their historical coordinates and are flagged `closed`.
 - Road routes & drive times via the open **OSRM** routing engine; walking
   routes estimated along the sidewalk grid. Original walking minutes are retained.
@@ -199,3 +218,16 @@ instantly (useful for screenshots & embeds).
 - North Carolina Museum of Natural Sciences. (n.d.). [Directions and parking](https://www.naturalsciences.org/visit/directions-parking).
 - Mapcarta. (n.d.). [Royal Ontario Museum](https://mapcarta.com/25576818) and [North Carolina Museum of Natural Sciences](https://mapcarta.com/W197842115). Coordinates based on OpenStreetMap.
 - Google Maps. (2026, October 11). Museum route estimates from the public neighbourhood landmarks recorded in `travel.source`.
+
+## Additional venue sources
+
+- Boxcar Social. (n.d.). [Laneway](https://boxcarsocial.ca/pages/laneway).
+- Knife Toronto. (n.d.). [Coffee bar](https://knifetoronto.com/pages/coffee-bar).
+- Sam’s Club. (n.d.). [Wake Forest club](https://www.samsclub.com/club/6976-wake-forest-nc).
+- The Tower Escapes. (n.d.). [Contact](https://thetowerescapes.com/contact/).
+- Durham Performing Arts Center. (n.d.). [DPAC A–Z](https://www.dpacnc.com/center-info/dpac-a-z).
+- ONoir Toronto. (n.d.). [Contact us](https://www.onoirtoronto.com/contact-us/).
+- Richmond Station. (n.d.). [Find us](https://richmondstation.ca/find-us/).
+- Activate. (n.d.). [Toronto Stockyards](https://playactivate.com/location/toronto-stockyards).
+- Strike & Barrel. (n.d.). [Official site](https://strikeandbarrel.com/).
+- Google Maps. (2026, October 11). Place coordinates and approximate journeys from public neighbourhood landmarks, recorded per stop in `travel.source`.

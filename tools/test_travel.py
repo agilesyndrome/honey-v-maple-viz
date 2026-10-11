@@ -86,6 +86,35 @@ class TravelTests(unittest.TestCase):
             self.assertEqual(stops[key]['minutes'], minutes)
             self.assertIn('Google Maps', stops[key]['timeDetail'])
 
+    def test_added_destinations_keep_authored_category_and_mode(self):
+        stops = {s['key']: s for s in build_hm(self.data)['stops']}
+        expected = [
+            ('boxcar', 'toronto', 'coffee', 'walk', 20),
+            ('knife', 'toronto', 'coffee', 'walk', 10),
+            ('sams-club', 'raleigh', 'essentials', 'drive', 5),
+            ('tower-escape', 'raleigh', 'date-night', 'drive', 30),
+            ('dpac', 'raleigh', 'date-night', 'drive', 35),
+            ('onoir', 'toronto', 'date-night', 'transit', 45),
+            ('richmond-station', 'toronto', 'date-night', 'transit', 25),
+            ('activate', 'toronto', 'fun-games', 'transit', 50),
+            ('strike-barrel', 'raleigh', 'fun-games', 'drive', 10),
+        ]
+        for key, city, category, mode, minutes in expected:
+            with self.subTest(key=key):
+                stop = stops[key]
+                self.assertEqual((stop['city'], stop['category'], stop['travelMode'], stop['minutes']),
+                                 (city, category, mode, minutes))
+                self.assertIn('Google Maps', stop['timeDetail'])
+                self.assertIn('neighbourhood proxy', stop['timeDetail'])
+                # A proxy route length must not be presented as a home route.
+                self.assertIsNone(stop['routeStr'])
+
+    def test_compact_chart_name_keeps_full_destination_name(self):
+        stop = next(s for s in build_hm(self.data)['stops'] if s['key'] == 'dpac')
+        self.assertEqual(stop['chartName'], 'DPAC')
+        self.assertEqual(stop['name'], 'Durham Performing Arts Center')
+        self.assertIn('Durham Performing Arts Center', stop['aria'])
+
     def test_bad_travel_inputs_fail(self):
         for field, value in [('mode', 'fly'), ('speedKph', 0), ('waitMinutes', -1), ('accessKm', math.nan), ('transitMinutes', math.inf)]:
             with self.subTest(field=field):

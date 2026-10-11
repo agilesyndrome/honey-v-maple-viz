@@ -146,9 +146,9 @@
       "metric": {
         "scope": "date-night",
         "title": "The date-night gap",
-        "flavor": "Up north the night out is a stroll; down south it’s a road trip.",
-        "widestFlavor": "A closed chapter keeps the widest ring of all.",
-        "minutesFlavor": "The one errand where the stroll wins — dinner is closer on foot than by car."
+        "flavor": "Dinner, an escape room, or a night at the theatre.",
+        "widestFlavor": "A theatre night stretches the circle to Durham.",
+        "minutesFlavor": "Walks and transit up north; drives down south."
       }
     },
     {
@@ -158,8 +158,8 @@
       "metric": {
         "scope": "fun & games",
         "title": "The fun & games gap",
-        "flavor": "A museum day in two cities.",
-        "widestFlavor": "The same curiosity, a different journey.",
+        "flavor": "Museums, active games, and a round of bowling.",
+        "widestFlavor": "Different kinds of play, measured from home.",
         "minutesFlavor": "Transit in Toronto; driving in Raleigh."
       }
     }
@@ -458,6 +458,229 @@
           "observedMinutes": 30,
           "observedRouteKm": 25.3,
           "roundedToMinutes": 5
+        }
+      }
+    },
+    {
+      "key": "boxcar",
+      "city": "toronto",
+      "name": "Boxcar Social",
+      "category": "coffee",
+      "lat": 43.6556359,
+      "lon": -79.4093359,
+      "angle": 5,
+      "labelDir": "right",
+      "note": "The Laneway café, on foot.",
+      "locationSource": "https://boxcarsocial.ca/pages/laneway",
+      "travel": {
+        "mode": "walk",
+        "walkingMinutes": 20,
+        "source": {
+          "provider": "Google Maps",
+          "originLabel": "Trinity Bellwoods Park",
+          "originKind": "public-neighbourhood-proxy",
+          "checkedOn": "2026-10-11",
+          "observedMinutes": 20,
+          "roundedToMinutes": 5,
+          "observedRouteKm": 1.4
+        }
+      }
+    },
+    {
+      "key": "knife",
+      "city": "toronto",
+      "name": "Knife",
+      "category": "coffee",
+      "lat": 43.6448676,
+      "lon": -79.4175118,
+      "angle": 58,
+      "labelDir": "right",
+      "note": "Coffee at Knife, a neighbourhood walk.",
+      "locationSource": "https://knifetoronto.com/pages/coffee-bar",
+      "travel": {
+        "mode": "walk",
+        "walkingMinutes": 10,
+        "source": {
+          "provider": "Google Maps",
+          "originLabel": "Trinity Bellwoods Park",
+          "originKind": "public-neighbourhood-proxy",
+          "checkedOn": "2026-10-11",
+          "observedMinutes": 7,
+          "roundedToMinutes": 5,
+          "observedRouteKm": 0.55
+        }
+      }
+    },
+    {
+      "key": "sams-club",
+      "city": "raleigh",
+      "name": "Sam’s Club",
+      "category": "essentials",
+      "lat": 35.9563982,
+      "lon": -78.5388293,
+      "angle": 155,
+      "labelDir": "right",
+      "note": "A shopping run to Wake Forest by car.",
+      "locationSource": "https://www.samsclub.com/club/6976-wake-forest-nc",
+      "travel": {
+        "mode": "drive",
+        "drivingMinutes": 5,
+        "source": {
+          "provider": "Google Maps",
+          "originLabel": "Food Lion, Crenshaw Corners",
+          "originKind": "public-neighbourhood-proxy",
+          "checkedOn": "2026-10-11",
+          "observedMinutes": 6,
+          "roundedToMinutes": 5,
+          "observedRouteKm": 3.1
+        }
+      }
+    },
+    {
+      "key": "tower-escape",
+      "city": "raleigh",
+      "name": "Tower Escape Room",
+      "category": "date-night",
+      "lat": 35.7795117,
+      "lon": -78.6410435,
+      "angle": 185,
+      "labelDir": "right",
+      "note": "An escape-room date in downtown Raleigh.",
+      "locationSource": "https://thetowerescapes.com/contact/",
+      "travel": {
+        "mode": "drive",
+        "drivingMinutes": 30,
+        "source": {
+          "provider": "Google Maps",
+          "originLabel": "Food Lion, Crenshaw Corners",
+          "originKind": "public-neighbourhood-proxy",
+          "checkedOn": "2026-10-11",
+          "observedMinutes": 30,
+          "roundedToMinutes": 5,
+          "observedRouteKm": 26.1
+        }
+      }
+    },
+    {
+      "key": "dpac",
+      "city": "raleigh",
+      "name": "Durham Performing Arts Center",
+      "category": "date-night",
+      "lat": 35.993248,
+      "lon": -78.9021923,
+      "angle": 245,
+      "labelDir": "left",
+      "note": "A night at the theatre in Durham, by car.",
+      "locationSource": "https://www.dpacnc.com/center-info/dpac-a-z",
+      "travel": {
+        "mode": "drive",
+        "drivingMinutes": 35,
+        "source": {
+          "provider": "Google Maps",
+          "originLabel": "Food Lion, Crenshaw Corners",
+          "originKind": "public-neighbourhood-proxy",
+          "checkedOn": "2026-10-11",
+          "observedMinutes": 35,
+          "roundedToMinutes": 5,
+          "observedRouteKm": 33.2
+        }
+      },
+      "chartName": "DPAC"
+    },
+    {
+      "key": "onoir",
+      "city": "toronto",
+      "name": "O. Noir",
+      "category": "date-night",
+      "lat": 43.6690891,
+      "lon": -79.382655,
+      "angle": 28,
+      "labelDir": "right",
+      "note": "Dining in the dark, reached by public transit.",
+      "locationSource": "https://www.onoirtoronto.com/contact-us/",
+      "travel": {
+        "mode": "transit",
+        "transitMinutes": 45,
+        "source": {
+          "provider": "Google Maps",
+          "originLabel": "Trinity Bellwoods Park",
+          "originKind": "public-neighbourhood-proxy",
+          "checkedOn": "2026-10-11",
+          "observedMinutes": 43,
+          "roundedToMinutes": 5
+        }
+      }
+    },
+    {
+      "key": "richmond-station",
+      "city": "toronto",
+      "name": "Richmond Station",
+      "category": "date-night",
+      "lat": 43.6514536,
+      "lon": -79.3794917,
+      "angle": 82,
+      "labelDir": "right",
+      "note": "Dinner downtown, reached by public transit.",
+      "locationSource": "https://richmondstation.ca/find-us/",
+      "travel": {
+        "mode": "transit",
+        "transitMinutes": 25,
+        "source": {
+          "provider": "Google Maps",
+          "originLabel": "Trinity Bellwoods Park",
+          "originKind": "public-neighbourhood-proxy",
+          "checkedOn": "2026-10-11",
+          "observedMinutes": 27,
+          "roundedToMinutes": 5
+        }
+      }
+    },
+    {
+      "key": "activate",
+      "city": "toronto",
+      "name": "Activate",
+      "category": "fun-games",
+      "lat": 43.6730982,
+      "lon": -79.4688354,
+      "angle": 290,
+      "labelDir": "left",
+      "note": "The Stockyards location, reached by public transit.",
+      "locationSource": "https://playactivate.com/location/toronto-stockyards",
+      "travel": {
+        "mode": "transit",
+        "transitMinutes": 50,
+        "source": {
+          "provider": "Google Maps",
+          "originLabel": "Trinity Bellwoods Park",
+          "originKind": "public-neighbourhood-proxy",
+          "checkedOn": "2026-10-11",
+          "observedMinutes": 48,
+          "roundedToMinutes": 5
+        }
+      }
+    },
+    {
+      "key": "strike-barrel",
+      "city": "raleigh",
+      "name": "Strike & Barrel",
+      "category": "fun-games",
+      "lat": 35.974334,
+      "lon": -78.508569,
+      "angle": 115,
+      "labelDir": "left",
+      "note": "Bowling and games in Wake Forest, by car.",
+      "locationSource": "https://strikeandbarrel.com/",
+      "travel": {
+        "mode": "drive",
+        "drivingMinutes": 10,
+        "source": {
+          "provider": "Google Maps",
+          "originLabel": "Food Lion, Crenshaw Corners",
+          "originKind": "public-neighbourhood-proxy",
+          "checkedOn": "2026-10-11",
+          "observedMinutes": 9,
+          "roundedToMinutes": 5,
+          "observedRouteKm": 5.6
         }
       }
     }

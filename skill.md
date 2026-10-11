@@ -31,7 +31,7 @@ pans it, and a scope badge reports the current radius.
   other stop (`hm-hid`, they disappear entirely) and tweens the view to the
   smallest "nice" scope that fits the selection (×1.15 padding, snapped to
   the `chart.viewStops` ladder). "All stops" fits the widest stop — which is
-  why one 16.6 km date-night restaurant can make the overview look tiny.
+  why the 30.4 km theatre trip to Durham can make the overview look tiny.
   That's honest: it's the argument for picking a category or zooming.
 - **Zoom & pan:** wheel (about the cursor), pinch, +/−/⤢ buttons, drag to
   roam. Home never leaves the disc (centre clamped to 0.92 × radius).
@@ -50,13 +50,13 @@ pans it, and a scope badge reports the current radius.
 - The **essentials circles are nearly identical** — Walmart 1.13 km vs Food
   Lion 1.06 km (and Raleigh's Target run is still 4.5 km).
 - The **coffee run is an order of magnitude apart** — Misc 0.70 km vs a
-  Raleigh coffee scene that starts at 6.7 km and reaches 10.2 km (×11.6 on
-  average).
+  Raleigh coffee scene that starts at 6.7 km and reaches 10.2 km.
+  Knife and Boxcar Social join Misc inside Toronto’s 1.2 km coffee circle (×8.9 gap).
 - Daily Life pairs the school walks in both cities with Harbourfront Centre
   (Elijah's Toronto volunteer post).
-- **Date night inverts the clock:** Toronto strolls 0.9 km to dinner in
-  13 minutes; Raleigh drove 26 minutes to Mandolin — ×18.8, and the
-  restaurant has since closed (kept on the map as a historical ring).
+- **Date night includes both dinner and entertainment:** Toronto walks to
+  And/Ore or takes transit to O. Noir and Richmond Station. Raleigh drives
+  to Tower Escape Room and DPAC; Mandolin stays as a historical closed ring.
 
 Hover / tab / click any stop: its **true radius ring** lights up as a dashed
 ghost ring (in km-space, so it zooms with the world), everything else dims,
@@ -133,12 +133,12 @@ $CHROME --headless=new --no-sandbox --allow-file-access-from-files \
 `?reveal=now` skips the intro choreography (headless virtual time doesn't
 advance CSS transitions), landing instantly on the final state.
 
-The harness asserts: 16 stops + 16 paths drawn; chips rescope to exact
-scopes (coffee→12 km, essentials→6, work→5, date-night→20) and non-matching
+The harness asserts: 25 stops + 25 paths drawn; chips rescope to exact
+scopes (coffee→12 km, essentials→6, work→5, date-night→40) and non-matching
 stops disappear; zoom buttons, wheel and drag-pan move the view; hover →
 tooltip + ghost ring at the exact km radius; click → pin (persists through
 mouseleave, released by outside click / Esc); unit toggle flips every
-string; live metrics land exact values (×4.0 / ×11.6 / ×18.8 …);
+string; live metrics land exact values (×4.8 / ×8.9 / ×8.1 …);
 **no label overlaps at five scopes**; no label escapes the chart box;
 **no address fragments in the DOM**. Run it again at
 `--window-size=430,3300` for mobile, and once *without* `?reveal=now` to
@@ -262,7 +262,7 @@ at desktop and mobile sizes; its checks must fail on false assertion values.
   If that ever bothers us, a "true bearings" toggle would be more literal
   but less legible.
 - The overview will always be dominated by the widest stop (currently
-  Science Museum at 18.8 km). Decluttering hides
+  Durham Performing Arts Center at 30.4 km). Decluttering hides
   near-home labels at that scope; zoom or pick a category to read them.
 - Drive times are free-flow; real traffic would widen Raleigh's times.
 - Natural next steps: per-category URL hash (shareable scopes), a "tour"

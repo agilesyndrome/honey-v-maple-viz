@@ -176,7 +176,7 @@ function buildChart() {
     const city = D.cities[s.city];
     const left = s.labelDir === 'left';
     const nx = left ? -22 : 22, ny = left ? -2 : 3, anchor = left ? 'end' : 'start';
-    const labels = '<text class="hm-stopname" x="' + nx + '" y="' + ny + '" text-anchor="' + anchor + '">' + esc(dispName(s)) + '</text>'
+    const labels = '<text class="hm-stopname" x="' + nx + '" y="' + ny + '" text-anchor="' + anchor + '">' + esc(s.chartName || dispName(s)) + '</text>'
       + '<text class="hm-stopsub hm-u" data-km="' + esc(s.distShort.km) + '" data-mi="' + esc(s.distShort.mi) + '" x="' + nx + '" y="' + (ny + 28) + '" text-anchor="' + anchor + '">' + esc(s.distShort.km) + '</text>';
     p.push('<g class="hm-ptg" data-g="' + s.key + '" data-city="' + s.city + '" data-cat="' + s.category + '" transform="translate(' + wx(s).toFixed(3) + ' ' + wy(s).toFixed(3) + ')" tabindex="0" role="button" aria-label="' + esc(s.aria) + '">'
       + '<g class="hm-anf" style="--d:' + (1.25 + i * 0.09).toFixed(2) + 's">'
