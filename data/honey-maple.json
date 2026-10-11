@@ -1,0 +1,367 @@
+{
+  "schema": "honey-maple/4",
+  "meta": {
+    "title": "Honey ✕ Maple — Two Homes, One Circle",
+    "description": "Compare everyday distances and estimated travel minutes from our front doors in Toronto (walking and transit) vs Raleigh (driving). Names only — never addresses."
+  },
+  "chart": {
+    "viewBox": 840,
+    "center": 420,
+    "rMaxPx": 316,
+    "ringKm": [
+      0.5,
+      1,
+      2,
+      4,
+      8,
+      16,
+      32
+    ],
+    "viewStops": [
+      1,
+      1.25,
+      1.5,
+      2,
+      2.5,
+      3,
+      4,
+      5,
+      6,
+      8,
+      10,
+      12,
+      16,
+      20,
+      24,
+      32,
+      40
+    ],
+    "ringMinutes": [
+      2.5,
+      5,
+      10,
+      20,
+      40,
+      80,
+      160
+    ],
+    "timeViewStops": [
+      5,
+      10,
+      15,
+      20,
+      25,
+      30,
+      40,
+      50,
+      60,
+      80,
+      100,
+      120,
+      160,
+      200
+    ]
+  },
+  "cities": {
+    "toronto": {
+      "name": "Toronto",
+      "region": "Ontario",
+      "alias": "Maple",
+      "aliasIcon": "leaf",
+      "accent": "#ff6f5d",
+      "soft": "#ff9078",
+      "mode": "walk",
+      "verb": "we walk or take transit",
+      "badge": "We walk & take transit",
+      "hemisphere": "north",
+      "tagline": "TORONTO · NORTH — WALK & TRANSIT",
+      "note": "The nearby errands are walks; the farther ones include transit, access on foot, and a little waiting.",
+      "home": {
+        "label": "Home",
+        "lat": 43.65179,
+        "lon": -79.42289
+      }
+    },
+    "raleigh": {
+      "name": "Raleigh",
+      "region": "North Carolina",
+      "alias": "Honey",
+      "aliasIcon": "hex",
+      "accent": "#ffb45c",
+      "soft": "#ffd08a",
+      "mode": "drive",
+      "verb": "we drive",
+      "badge": "We drive everywhere",
+      "hemisphere": "south",
+      "tagline": "RALEIGH · SOUTH — WE DRIVE",
+      "note": "Even “just down the road” starts with a car key — and the good coffee lives a highway away.",
+      "home": {
+        "label": "Home",
+        "lat": 35.94161,
+        "lon": -78.57104
+      }
+    }
+  },
+  "categories": [
+    {
+      "key": "coffee",
+      "label": "Coffee",
+      "glyph": "cup",
+      "metric": {
+        "scope": "coffee",
+        "title": "The coffee gap",
+        "flavor": "The nearest espresso is a highway away.",
+        "widestFlavor": "Raleigh’s coffee circle doesn’t quit.",
+        "minutesFlavor": "Up north it’s a stroll; down south it’s a commute."
+      }
+    },
+    {
+      "key": "essentials",
+      "label": "Everyday Essentials",
+      "glyph": "cart",
+      "metric": {
+        "scope": "essentials",
+        "title": "The essentials gap",
+        "flavor": "Same cart of stuff — down south it comes with a parking lot.",
+        "widestFlavor": "The big-box run still crosses most of Toronto.",
+        "minutesFlavor": "A walk or transit ride up north; a drive down south."
+      }
+    },
+    {
+      "key": "work",
+      "label": "Work & Volunteering",
+      "glyph": "case",
+      "metric": {
+        "scope": "work & volunteering",
+        "title": "A Toronto-only ring",
+        "soloFlavor": "Raleigh has nothing in this circle yet.",
+        "widestFlavor": "The volunteer post holds the whole map.",
+        "minutesFlavor": "No Raleigh counterpart to compare."
+      }
+    },
+    {
+      "key": "date-night",
+      "label": "Date Night",
+      "glyph": "date",
+      "metric": {
+        "scope": "date-night",
+        "title": "The date-night gap",
+        "flavor": "Up north the night out is a stroll; down south it’s a road trip.",
+        "widestFlavor": "A closed chapter keeps the widest ring of all.",
+        "minutesFlavor": "The one errand where the stroll wins — dinner is closer on foot than by car."
+      }
+    }
+  ],
+  "allMetric": {
+    "scope": "everyday",
+    "title": "The everyday gap",
+    "flavor": "The pull of the suburb, drawn to scale.",
+    "widestFlavor": "Pick a category — or zoom in — to find the walkable core.",
+    "minutesFlavor": "Nearby walks and farther transit trips share a clock with Raleigh’s drives."
+  },
+  "stops": [
+    {
+      "key": "walmart",
+      "city": "toronto",
+      "name": "Walmart",
+      "category": "essentials",
+      "lat": 43.65626,
+      "lon": -79.43549,
+      "routeKm": 1.4,
+      "angle": 322,
+      "labelDir": "left",
+      "note": "Food Lion lands on almost the same circle — the same ring, worn by different shoes.",
+      "travel": {
+        "mode": "walk",
+        "walkingMinutes": 15
+      }
+    },
+    {
+      "key": "misc",
+      "city": "toronto",
+      "name": "Misc Coffee",
+      "category": "coffee",
+      "lat": 43.64548,
+      "lon": -79.42293,
+      "routeKm": 0.9,
+      "angle": 34,
+      "labelDir": "right",
+      "note": "Raleigh’s nearest espresso is a highway away — Toronto’s whole coffee ritual fits inside a rounding error of that drive.",
+      "travel": {
+        "mode": "walk",
+        "walkingMinutes": 10
+      }
+    },
+    {
+      "key": "harbourfront",
+      "city": "toronto",
+      "name": "Harbourfront Centre",
+      "category": "work",
+      "lat": 43.63982,
+      "lon": -79.38114,
+      "routeKm": 4.4,
+      "angle": 70,
+      "labelDir": "left",
+      "note": "A Toronto-only ring — Elijah’s volunteer post; Raleigh has nothing out here yet.",
+      "travel": {
+        "mode": "transit",
+        "walkingMinutes": 50,
+        "transitMinutes": 35,
+        "source": {
+          "provider": "Google Maps",
+          "originLabel": "Trinity Bellwoods Park",
+          "originKind": "public-neighbourhood-proxy",
+          "checkedOn": "2026-10-11",
+          "observedMinutes": 34,
+          "roundedToMinutes": 5
+        }
+      }
+    },
+    {
+      "key": "andore",
+      "city": "toronto",
+      "name": "And/Ore",
+      "category": "date-night",
+      "lat": 43.64405,
+      "lon": -79.42042,
+      "routeKm": 1.1,
+      "angle": 12,
+      "labelDir": "right",
+      "note": "Date night, Toronto-style — a short stroll. Mandolin’s old ring would swallow this whole walk whole.",
+      "travel": {
+        "mode": "walk",
+        "walkingMinutes": 13
+      }
+    },
+    {
+      "key": "ikea",
+      "city": "toronto",
+      "name": "IKEA",
+      "category": "essentials",
+      "lat": 43.65905,
+      "lon": -79.38313,
+      "routeKm": 4.4,
+      "angle": 48,
+      "labelDir": "right",
+      "note": "Flat-pack furniture without firing up an engine — downtown IKEA sits inside Harbourfront’s ring.",
+      "travel": {
+        "mode": "transit",
+        "walkingMinutes": 55,
+        "transitMinutes": 35,
+        "source": {
+          "provider": "Google Maps",
+          "originLabel": "Trinity Bellwoods Park",
+          "originKind": "public-neighbourhood-proxy",
+          "checkedOn": "2026-10-11",
+          "observedMinutes": 33,
+          "roundedToMinutes": 5
+        }
+      }
+    },
+    {
+      "key": "foodlion",
+      "city": "raleigh",
+      "name": "Food Lion",
+      "category": "essentials",
+      "lat": 35.94079,
+      "lon": -78.55926,
+      "routeKm": 1.4,
+      "angle": 142,
+      "labelDir": "right",
+      "note": "Walmart lands on almost the same circle — but down there, that radius comes with a parking lot.",
+      "travel": {
+        "mode": "drive",
+        "drivingMinutes": 4
+      }
+    },
+    {
+      "key": "jubala",
+      "city": "raleigh",
+      "name": "Jubala Coffee",
+      "category": "coffee",
+      "lat": 35.8985,
+      "lon": -78.63549,
+      "routeKm": 9.9,
+      "angle": 214,
+      "labelDir": "left",
+      "note": "Misc sits ×10.7 closer in — Toronto’s whole coffee ritual fits inside a rounding error of this drive.",
+      "travel": {
+        "mode": "drive",
+        "drivingMinutes": 12
+      }
+    },
+    {
+      "key": "sola",
+      "city": "raleigh",
+      "name": "Sola Coffee",
+      "category": "coffee",
+      "lat": 35.88532,
+      "lon": -78.6601,
+      "routeKm": 13.0,
+      "angle": 250,
+      "labelDir": "left",
+      "note": "Raleigh’s coffee circle keeps growing — Sola sits even farther out than Jubala.",
+      "travel": {
+        "mode": "drive",
+        "drivingMinutes": 18
+      }
+    },
+    {
+      "key": "bw",
+      "city": "raleigh",
+      "name": "Black & White",
+      "category": "coffee",
+      "lat": 35.97611,
+      "lon": -78.50957,
+      "routeKm": 8.2,
+      "angle": 108,
+      "labelDir": "left",
+      "note": "The original Wake Forest café — the nearest thing to a corner shop, and it’s still a 6.7 km hop from the front door.",
+      "travel": {
+        "mode": "drive",
+        "drivingMinutes": 11
+      }
+    },
+    {
+      "key": "target",
+      "city": "raleigh",
+      "name": "Target",
+      "category": "essentials",
+      "lat": 35.9748,
+      "lon": -78.54177,
+      "routeKm": 5.6,
+      "angle": 128,
+      "labelDir": "right",
+      "note": "Four kilometres of suburb for the same cart of stuff Toronto walks to.",
+      "travel": {
+        "mode": "drive",
+        "drivingMinutes": 8
+      }
+    },
+    {
+      "key": "mandolin",
+      "city": "raleigh",
+      "name": "Mandolin",
+      "category": "date-night",
+      "lat": 35.80906,
+      "lon": -78.65512,
+      "routeKm": 21.0,
+      "angle": 210,
+      "labelDir": "left",
+      "status": "closed",
+      "note": "A closed chapter, kept on the map — date night once meant a half-hour drive south.",
+      "travel": {
+        "mode": "drive",
+        "drivingMinutes": 26
+      }
+    }
+  ],
+  "travelDefaults": {
+    "initialTorontoWalkingRadiusKm": 2,
+    "walkingSpeedKph": 5,
+    "drivingSpeedKph": 35,
+    "transitSpeedKph": 15,
+    "transitAccessKm": 0.5,
+    "transitWaitMinutes": 5
+  }
+}

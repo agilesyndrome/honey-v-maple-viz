@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Honey ✕ Maple — Two Homes, One Circle</title>
+<meta name="description" content="Compare everyday distances and estimated travel minutes from our front doors in Toronto (walking and transit) vs Raleigh (driving). Names only — never addresses.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&amp;family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   HONEY ✕ MAPLE — assets/style.css
+   Injected by tools/build.py into index.html. Edit, then rebuild.
+   ============================================================ */
+:root{
+  color-scheme: dark;
+  --bg0:#090c12; --bg1:#121a2b;
+  --panel:rgba(255,255,255,.028); --panel-line:rgba(255,255,255,.075);
+  --ink:#eef1f8; --ink2:#aeb6c9; --ink3:#79819a;
+  --maple:#ff6f5d; --maple-soft:#ff9078; --maple-dim:#e8554a;
+  --honey:#ffb45c; --honey-soft:#ffd08a; --honey-dim:#f2a23f;
+  --home:#f4ecdc;
+  --serif:"Fraunces", Georgia, "Times New Roman", serif;
+  --sans:"Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:
+    radial-gradient(1200px 700px at 18% -10%, rgba(255,111,93,.075), transparent 60%),
+    radial-gradient(1200px 700px at 85% 110%, rgba(255,180,92,.065), transparent 60%),
+    linear-gradient(180deg, var(--bg0), var(--bg1) 55%, #0d1220);
+  color:var(--ink);
+  font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+  line-height:1.5;
+}
+.hm-app{position:relative; max-width:1180px; margin:0 auto; padding:clamp(20px,4vw,56px) clamp(18px,3.5vw,40px) 60px; overflow-x:hidden}
+.hm-grain{position:fixed; inset:0; pointer-events:none; z-index:5; opacity:.5; mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.32'/%3E%3C/svg%3E");}
+::selection{background:rgba(255,180,92,.35)}
+
+/* ---------- reveal choreography ---------- */
+.hm-an{transition:opacity .7s cubic-bezier(.22,.7,.25,1), transform .8s cubic-bezier(.22,.9,.24,1); transition-delay:var(--d,0s)}
+.hm-pre .hm-an{opacity:0; transform:translateY(14px)}
+svg .hm-anf{transition:opacity .7s cubic-bezier(.22,.7,.25,1); transition-delay:var(--d,0s)}
+svg.hm-pre .hm-anf{opacity:0}
+svg .hm-pre-ring{transition:opacity .7s, transform .9s cubic-bezier(.16,.8,.22,1); transition-delay:var(--d,0s); transform-box:fill-box; transform-origin:center}
+svg.hm-pre .hm-pre-ring{opacity:0; transform:scale(.12)}
+svg .hm-pre-path{transition:stroke-dashoffset 1s cubic-bezier(.4,.1,.2,1), opacity .6s; transition-delay:var(--d,0s)}
+svg.hm-pre .hm-pre-path{stroke-dashoffset:var(--len)}
+svg .hm-pre-fade{transition:opacity .8s; transition-delay:var(--d,0s)}
+svg.hm-pre .hm-pre-fade{opacity:0}
+svg.hm-live .hm-anf, svg.hm-live .hm-pre-fade{transition:opacity .3s ease; transition-delay:0s}
+
+/* ---------- hero ---------- */
+.hm-hero{padding:clamp(8px,2vw,22px) 0 clamp(22px,3vw,34px)}
+.hm-kicker{display:flex; align-items:center; gap:10px; font-size:12px; font-weight:600; letter-spacing:.34em; color:var(--ink3); text-transform:uppercase}
+.hm-kicker .hm-leaf{color:var(--maple)} .hm-kicker .hm-hex{color:var(--honey)}
+.hm-kicker .hm-x{font-family:var(--serif); font-style:italic; letter-spacing:0; color:var(--ink3); font-size:13px}
+.hm-hero h1{
+  font-family:var(--serif); font-weight:560; font-size:clamp(42px, 7.2vw, 84px);
+  line-height:1.02; letter-spacing:-.015em; margin:20px 0 0;
+  font-variation-settings:"opsz" 120;
+}
+.hm-hero h1 em{font-style:italic; font-weight:400; color:var(--honey-soft)}
+.hm-hero h1 .hm-em-maple{color:var(--maple-soft)}
+.hm-lede{max-width:660px; margin:16px 0 0; font-size:15px; color:var(--ink2); font-weight:400}
+.hm-lede b{color:var(--ink); font-weight:600}
+.hm-lede .hm-maple-ink{color:var(--maple-soft); font-weight:600}
+.hm-lede .hm-honey-ink{color:var(--honey-soft); font-weight:600}
+
+/* ---------- compact, accessible toolbar ---------- */
+.hm-controls{position:relative;z-index:40;margin-top:14px}
+.hm-controls-left{display:flex;align-items:center;gap:10px;padding:8px;
+  border:1px solid rgba(255,255,255,.09);border-radius:20px;
+  background:linear-gradient(140deg,rgba(255,255,255,.04),rgba(255,255,255,.018));
+  box-shadow:0 10px 35px rgba(0,0,0,.12)}
+.hm-seg{position:relative;display:inline-flex;align-items:center;gap:2px;padding:3px;
+  border:1px solid rgba(255,255,255,.08);border-radius:13px;background:rgba(0,0,0,.13)}
+.hm-seg[hidden]{display:none}
+.hm-seg button{position:relative;appearance:none;border:0;background:transparent;
+  color:var(--ink3);font:600 13px/1 var(--sans);padding:0 18px;min-height:44px;
+  border-radius:10px;cursor:pointer;transition:color .2s,background .2s,transform .15s}
+.hm-seg button:hover{color:var(--ink)}
+.hm-seg button:active,.hm-picker-trigger:active{transform:scale(.98)}
+.hm-seg button[aria-pressed="true"]{color:var(--ink);background:rgba(255,255,255,.09)}
+.hm-measure{flex:0 0 224px;display:grid;grid-template-columns:1fr 1fr;gap:0}
+.hm-measure button[aria-pressed="true"]{background:transparent}
+.hm-seg-thumb{position:absolute;inset:3px auto 3px 3px;width:calc(50% - 3px);border-radius:10px;
+  background:linear-gradient(130deg,rgba(255,111,93,.24),rgba(255,180,92,.16));
+  border:1px solid rgba(255,180,92,.2);box-shadow:0 3px 12px rgba(0,0,0,.18);
+  transition:transform .35s cubic-bezier(.22,.8,.25,1)}
+.hm-measure[data-active="time"] .hm-seg-thumb{transform:translateX(100%)}
+#hm-units{margin-left:0}
+#hm-units button{padding:0 14px;min-width:42px;font-size:12px}
+.hm-picker{position:relative;flex:0 1 285px;min-width:0;margin-left:auto}
+.hm-picker-trigger{appearance:none;width:100%;min-height:50px;display:flex;align-items:center;gap:10px;
+  border:1px solid rgba(255,255,255,.1);border-radius:13px;background:rgba(255,255,255,.035);
+  color:var(--ink2);font:600 13px/1.3 var(--sans);padding:0 14px;text-align:left;cursor:pointer;
+  transition:background .2s,border-color .2s,transform .15s}
+.hm-picker-trigger:hover,.hm-picker-trigger[aria-expanded="true"]{background:rgba(255,255,255,.065);border-color:rgba(255,180,92,.3)}
+.hm-picker-icon{color:var(--honey-soft);display:flex;align-items:center;justify-content:center;width:18px;flex:none}
+.hm-chevron{margin-left:auto;flex:none;color:var(--ink3);transition:transform .25s}
+.hm-picker-trigger[aria-expanded="true"] .hm-chevron{transform:rotate(180deg)}
+#hm-category-label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hm-chips{position:absolute;top:calc(100% + 10px);right:0;width:320px;max-width:calc(100vw - 52px);
+  display:flex;flex-direction:column;gap:3px;padding:8px;border:1px solid rgba(255,255,255,.13);
+  border-radius:17px;background:linear-gradient(145deg,#1c2130,#121722);
+  box-shadow:0 18px 55px rgba(0,0,0,.45);animation:hm-menu-in .18s ease-out;z-index:50}
+.hm-chips[hidden]{display:none}
+.hm-picker-heading{color:var(--ink3);font:600 10px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;padding:10px 12px 9px}
+.hm-chip{appearance:none;display:flex;align-items:center;gap:11px;min-height:46px;width:100%;
+  padding:0 12px;border:1px solid transparent;border-radius:10px;background:transparent;
+  color:var(--ink2);font:500 13px/1.3 var(--sans);text-align:left;cursor:pointer;
+  transition:background .18s,color .18s,border-color .18s}
+.hm-chip:hover{background:rgba(255,255,255,.065);color:var(--ink)}
+.hm-chip[aria-pressed="true"]{background:rgba(255,180,92,.085);color:var(--honey-soft);border-color:rgba(255,180,92,.08)}
+.hm-option-icon{display:flex;align-items:center;justify-content:center;flex:none;width:18px}
+.hm-option-check{margin-left:auto;opacity:0;color:var(--honey-soft)}
+.hm-chip[aria-pressed="true"] .hm-option-check{opacity:1}
+.hm-seg button:focus-visible,.hm-chip:focus-visible,.hm-picker-trigger:focus-visible,.hm-ptg:focus-visible,.hm-zoom button:focus-visible{outline:2px solid var(--honey);outline-offset:3px}
+@keyframes hm-menu-in{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+
+/* ---------- city cards ---------- */
+.hm-cities{display:grid; grid-template-columns:1fr 1fr; gap:clamp(14px,2vw,22px); margin-top:clamp(18px,2.6vw,28px)}
+.hm-city{
+  position:relative; background:var(--panel); border:1px solid var(--panel-line); border-radius:20px;
+  padding:22px 22px 18px; transition:border-color .3s, transform .3s, background .3s;
+}
+.hm-city::before{content:""; position:absolute; top:14px; left:22px; right:22px; height:2px; border-radius:2px; background:linear-gradient(90deg, var(--c), transparent)}
+.hm-city.hm-maple-card{--c:var(--maple)} .hm-city.hm-honey-card{--c:var(--honey)}
+.hm-city:hover{border-color:color-mix(in srgb, var(--c) 45%, transparent); background:rgba(255,255,255,.04)}
+.hm-alias{display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; letter-spacing:.3em; text-transform:uppercase; color:var(--c)}
+.hm-city h3{font-family:var(--serif); font-weight:500; font-size:26px; margin:10px 0 2px; letter-spacing:.01em}
+.hm-city h3 span{font-size:15px; color:var(--ink3); font-family:var(--sans); font-weight:500}
+.hm-mode{display:inline-flex; align-items:center; gap:8px; font-size:12.5px; color:var(--ink2); margin:10px 0 16px;
+  padding:6px 12px; border:1px solid var(--panel-line); border-radius:999px}
+.hm-mode svg{display:block}
+.hm-row{display:flex; justify-content:space-between; align-items:baseline; gap:12px; padding:10px 0; border-top:1px solid rgba(255,255,255,.06)}
+.hm-row .hm-row-k{font-size:11px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--ink3)}
+.hm-row .hm-row-v{text-align:right}
+.hm-row .hm-row-v b{display:block; font-size:15px; color:var(--ink); font-weight:600}
+.hm-row .hm-row-v b.hm-mute{color:var(--ink3); font-weight:500}
+.hm-row .hm-row-v i{display:block; font-style:normal; font-size:12px; color:var(--ink3)}
+.hm-city-note{margin-top:14px; font-family:var(--serif); font-style:italic; font-size:14.5px; line-height:1.45; color:var(--ink2)}
+.hm-city-note::before{content:"— "}
+
+/* ---------- chart (center stage) ---------- */
+.hm-stage{margin-top:18px}
+.hm-chartWrap{position:relative; margin:0 auto; max-width:min(100%, 940px)}
+.hm-chart svg{
+  display:block; width:100%; height:auto; font-family:var(--sans);
+  cursor:grab; touch-action:none;
+}
+.hm-chart svg.hm-panning{cursor:grabbing}
+.hm-chart text{paint-order:stroke fill; stroke:rgba(9,12,18,.78); stroke-width:4px; stroke-linejoin:round}
+.hm-cap{margin-top:14px; font-size:12px; color:var(--ink3); line-height:1.65; max-width:720px; margin-left:auto; margin-right:auto; text-align:center}
+.hm-caption-main{display:block;color:var(--ink2);font-weight:500}
+.hm-caption-hint{display:block;margin-top:3px;font-size:11px;color:var(--ink3)}
+.hm-cap .hm-cm{color:var(--maple-soft)} .hm-cap .hm-ch{color:var(--honey-soft)}
+
+svg .hm-ring{fill:none; stroke:rgba(255,255,255,.09)}
+svg .hm-ringlab{font-size:20px; fill:rgba(255,255,255,.55); font-weight:500}
+svg .hm-ringlab tspan{fill:rgba(255,255,255,.34)}
+svg .hm-tag{font-size:19px; font-weight:700; letter-spacing:.26em; fill:rgba(255,255,255,.55)}
+svg .hm-eq{stroke:rgba(255,255,255,.16)}
+svg .hm-sky{opacity:.06}
+svg .hm-home-lab{font-size:17px; font-weight:700; letter-spacing:.24em; fill:rgba(244,236,220,.9)}
+svg .hm-stopname{font-size:24px; font-weight:650; fill:#f3f5fb}
+svg .hm-stopsub{font-size:17px; fill:rgba(255,255,255,.55)}
+svg .hm-pathw{fill:none; stroke:var(--maple-soft); stroke-linecap:round; opacity:.85}
+svg .hm-roadcase{fill:none; stroke:var(--honey); stroke-opacity:.22; stroke-linecap:round}
+svg .hm-roadline{fill:none; stroke:var(--honey-soft); stroke-linecap:round; opacity:.9}
+/* A solid outer stroke with a dashed centre reads as paired transit rails. */
+svg .hm-transitcase{fill:none; stroke-opacity:.35; stroke-linecap:round}
+svg .hm-transitline{fill:none; stroke-linecap:round; opacity:.95}
+svg .hm-flow{animation:hm-flow 1.6s linear infinite}
+svg .hm-step{animation:hm-step 1.5s linear infinite}
+@keyframes hm-flow{to{stroke-dashoffset:-210}}
+@keyframes hm-step{to{stroke-dashoffset:-80}}
+@keyframes hm-pulse{0%{transform:scale(.55); opacity:.5} 75%{transform:scale(2); opacity:0} 100%{transform:scale(2); opacity:0}}
+svg .hm-halo{transform-box:fill-box; transform-origin:center; animation:hm-pulse 3.6s cubic-bezier(.3,.6,.4,1) infinite}
+svg .hm-ptg{cursor:pointer; outline:none; transition:opacity .3s}
+svg .hm-pathg{transition:opacity .3s}
+svg .hm-ptg .hm-core, svg .hm-ptg .hm-glow{transition:opacity .3s}
+svg .hm-ptg.pinned .hm-glow{opacity:.32}
+svg .hm-hid{visibility:hidden}
+svg .hm-off{opacity:.15}
+svg .hm-ghost{pointer-events:none; opacity:0; transition:opacity .35s}
+svg .hm-ghost.on{opacity:1}
+svg .hm-ghost circle{fill:none}
+svg .hm-ghostlab{font-size:20px; font-weight:700; letter-spacing:.06em}
+svg.hm-dim .hm-ptg:not(.on) .hm-core{opacity:.22}
+svg.hm-dim .hm-ptg:not(.on) .hm-stopname, svg.hm-dim .hm-ptg:not(.on) .hm-stopsub{opacity:.22}
+svg.hm-dim .hm-ptg:not(.on) .hm-glow{opacity:.04}
+svg.hm-dim .hm-pathg:not(.on){opacity:.18}
+
+/* ---------- zoom controls + scope badge ---------- */
+.hm-zoom{position:absolute; top:14px; right:14px; display:flex; flex-direction:column; gap:6px; z-index:20}
+.hm-zoom button{
+  appearance:none; width:40px; height:40px; border-radius:12px; cursor:pointer;
+  border:1px solid rgba(255,255,255,.14); background:rgba(9,12,18,.6); color:var(--ink2);
+  font:600 16px/1 var(--sans); display:flex; align-items:center; justify-content:center;
+  backdrop-filter:blur(6px); transition:border-color .25s, color .25s, background .25s;
+}
+.hm-zoom button:hover{border-color:rgba(255,180,92,.5); color:var(--ink)}
+.hm-zoom button:active{transform:scale(.94)}
+.hm-scope{
+  position:absolute; top:14px; left:14px; z-index:20;
+  font:600 11px/1 var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--ink3);
+  background:rgba(9,12,18,.55); border:1px solid var(--panel-line); border-radius:999px;
+  padding:8px 12px; backdrop-filter:blur(6px); pointer-events:none;
+}
+
+/* ---------- tooltip ---------- */
+.hm-tip{
+  position:absolute; z-index:30; pointer-events:none; width:264px;
+  background:linear-gradient(180deg, rgba(22,27,41,.97), rgba(15,19,30,.97));
+  border:1px solid rgba(255,255,255,.13); border-radius:14px;
+  box-shadow:0 24px 60px -18px rgba(0,0,0,.75);
+  padding:14px 16px 13px; opacity:0; transform:translateY(6px) scale(.98);
+  transition:opacity .22s, transform .22s;
+  backdrop-filter:blur(6px);
+}
+.hm-tip.show{opacity:1; transform:none}
+.hm-tip::before{content:""; position:absolute; top:-1px; left:14px; right:14px; height:2px; border-radius:2px; background:var(--tc, var(--honey))}
+.hm-tip-head{display:flex; align-items:center; gap:8px; font-size:14.5px; font-weight:650; color:var(--ink)}
+.hm-tip-head .hm-tip-cat{font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--ink3); margin-left:auto}
+.hm-tip-rows{margin-top:9px}
+.hm-tip-row{display:flex; justify-content:space-between; gap:14px; font-size:12.5px; color:var(--ink3); padding:4px 0; border-top:1px solid rgba(255,255,255,.055)}
+.hm-tip-row b{color:var(--ink); font-weight:600; text-align:right}
+.hm-tip-note{margin-top:9px; font-family:var(--serif); font-style:italic; font-size:13px; line-height:1.5; color:var(--ink2)}
+.hm-tip-estimate{margin-top:9px; font-size:11px; line-height:1.5; color:var(--ink3)}
+
+/* ---------- stats ---------- */
+.hm-stats{display:grid; grid-template-columns:repeat(3, 1fr); gap:clamp(14px,2vw,22px); margin-top:clamp(30px,4vw,44px)}
+.hm-stat{position:relative; background:var(--panel); border:1px solid var(--panel-line); border-radius:20px; padding:24px 24px 20px; overflow:hidden}
+.hm-stat::after{content:""; position:absolute; top:14px; left:24px; width:34px; height:2px; border-radius:2px; background:var(--c)}
+.hm-stat .hm-big{font-family:var(--serif); font-weight:530; font-size:clamp(44px, 4.6vw, 62px); line-height:1; letter-spacing:-.02em; margin-top:14px; font-variation-settings:"opsz" 100}
+.hm-stat .hm-big .hm-arrow{color:var(--ink3); font-size:.62em; vertical-align:.12em; padding:0 .07em}
+.hm-stat .hm-big .hm-unit{font-family:var(--sans); font-weight:600; font-size:.34em; color:var(--ink3); letter-spacing:.1em; text-transform:uppercase; margin-left:.35em; vertical-align:.3em}
+.hm-stat .hm-lab{margin-top:12px; font-size:10.5px; font-weight:700; letter-spacing:.24em; text-transform:uppercase; color:var(--ink3)}
+.hm-stat p{margin:8px 0 0; font-size:13px; line-height:1.6; color:var(--ink2)}
+.hm-stat p b{color:var(--ink)}
+.hm-stat.hm-s1{--c:var(--honey)} .hm-stat.hm-s2{--c:var(--honey)} .hm-stat.hm-s3{--c:var(--maple)}
+
+/* ---------- signature ---------- */
+.hm-sig{margin-top:34px; text-align:center; font-family:var(--serif); font-style:italic; font-size:13px; color:var(--ink3)}
+.hm-sig .hm-leaf{color:var(--maple)} .hm-sig .hm-hex{color:var(--honey)}
+
+/* ---------- responsive ---------- */
+@media (max-width: 1020px){
+  .hm-cities{grid-template-columns:1fr; gap:16px}
+  .hm-stats{grid-template-columns:1fr}
+}
+@media (max-width: 680px){
+  .hm-controls-left{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:7px;border-radius:18px}
+  .hm-measure{width:100%;min-width:0}
+  .hm-measure button{padding:0 10px}
+  #hm-units{grid-column:2;margin:0}
+  .hm-picker{grid-column:1 / -1;width:100%;margin:0}
+  .hm-chips{width:100%;max-width:none}
+  .hm-picker-trigger{min-height:46px}
+  .hm-controls-left:has(#hm-units[hidden]) .hm-measure{grid-column:1 / -1}
+}
+@media (max-width: 600px){
+  /* Let the city heading breathe above the full-size mobile scope badge. */
+  .hm-scope{top:44px}
+}
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{animation-duration:.001s !important; animation-iteration-count:1 !important; transition-duration:.001s !important; transition-delay:0s !important}
+}
+
+</style>
+</head>
+<body>
+<div class="hm-app" id="hm-app">
+
+  <!-- ======================= HERO ======================= -->
+  <header class="hm-hero">
+    <div class="hm-kicker hm-an" style="--d:.05s">
+      <svg class="hm-leaf" width="13" height="13" viewBox="0 0 14 14" aria-hidden="true"><path fill="currentColor" d="M7 .6 8.4 3l3.1-1.2-.7 3 3-1.1-2 2.3 3 1.3-3.4 1 .7 3.5-2.6-1.8L7 13.4 5.5 12.9l.6-1.9-2.4 1.7.7-3.5L-1 8.2l3-1.3L-.2 4.6l3 1.1-.7-3L5.6 3z"/></svg>
+      HONEY <span class="hm-x">✕</span> MAPLE
+      <svg class="hm-hex" width="12" height="12" viewBox="0 0 14 14" aria-hidden="true"><path fill="currentColor" d="M7 0l6 3.5v7L7 14l-6-3.5v-7z"/></svg>
+    </div>
+    <h1>
+      <span class="hm-an" style="--d:.12s; display:block">Two homes,</span>
+      <span class="hm-an" style="--d:.22s; display:block"><em class="hm-em-maple">one circle.</em></span>
+    </h1>
+    <p class="hm-lede hm-an" style="--d:.34s">
+      <b class="hm-maple-ink">Toronto on foot or by transit.</b>
+      <b class="hm-honey-ink">Raleigh behind the wheel.</b>
+      Everyday journeys, compared from home.
+    </p>
+  </header>
+
+  <!-- ======================= CONTROLS ======================= -->
+  <div class="hm-controls hm-an" style="--d:.42s">
+    <div class="hm-controls-left">
+      <div class="hm-seg hm-measure" data-active="distance" role="group" aria-label="Compare distance or travel time">
+        <span class="hm-seg-thumb" aria-hidden="true"></span>
+        <button type="button" id="hm-btn-distance" aria-pressed="true">Distance</button>
+        <button type="button" id="hm-btn-time" aria-pressed="false">Time</button>
+      </div>
+      <div class="hm-seg" id="hm-units" role="group" aria-label="Primary distance unit">
+        <button type="button" id="hm-btn-km" aria-label="Kilometres" aria-pressed="true">km</button>
+        <button type="button" id="hm-btn-mi" aria-label="Miles" aria-pressed="false">mi</button>
+      </div>
+      <div class="hm-picker"><button type="button" class="hm-picker-trigger" id="hm-category" aria-haspopup="menu" aria-expanded="false" aria-controls="hm-category-menu"><span class="hm-picker-icon" aria-hidden="true">◈</span><span id="hm-category-label">All stops</span><svg class="hm-chevron" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="hm-chips" id="hm-category-menu" role="menu" aria-label="Filter stops by category" hidden><span class="hm-picker-heading" aria-hidden="true">Explore your everyday</span><button type="button" class="hm-chip" role="menuitemradio" data-cat="all" aria-pressed="true" aria-checked="true"><span class="hm-option-icon" aria-hidden="true">◈</span>All stops<span class="hm-option-check" aria-hidden="true">✓</span></button><button type="button" class="hm-chip" data-cat="coffee" role="menuitemradio" aria-pressed="false" aria-checked="false"><span class="hm-option-icon"><svg width="12" height="12" viewBox="0 0 14 14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3.2,5.2 h5.6 v2.2 a2.8,2.8 0 0 1 -5.6,0 z"/><path d="M8.8,6 h1.4 a1.4,1.4 0 0 1 0,2.8 h-1.6"/></g><path d="M4.9,3 v1.2 M7,3 v1.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" fill="none"/></svg></span>Coffee<span class="hm-option-check" aria-hidden="true">✓</span></button><button type="button" class="hm-chip" data-cat="essentials" role="menuitemradio" aria-pressed="false" aria-checked="false"><span class="hm-option-icon"><svg width="12" height="12" viewBox="0 0 14 14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2,3.5 h9.6 l-1.4,4.2 H4.2 z M4.2,7.7 v2.3 M9.6,7.7 v2.3"/></g></svg></span>Everyday Essentials<span class="hm-option-check" aria-hidden="true">✓</span></button><button type="button" class="hm-chip" data-cat="work" role="menuitemradio" aria-pressed="false" aria-checked="false"><span class="hm-option-icon"><svg width="12" height="12" viewBox="0 0 14 14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M2.4,4.8 h9.2 v5.6 a1.4,1.4 0 0 1 -1.4,1.4 h-6.4 a1.4,1.4 0 0 1 -1.4,-1.4 z"/><path d="M5.2,4.8 v-1 a1.2,1.2 0 0 1 1.2,-1.2 h1.2 a1.2,1.2 0 0 1 1.2,1.2 v1"/></g></svg></span>Work &amp; Volunteering<span class="hm-option-check" aria-hidden="true">✓</span></button><button type="button" class="hm-chip" data-cat="date-night" role="menuitemradio" aria-pressed="false" aria-checked="false"><span class="hm-option-icon"><svg width="12" height="12" viewBox="0 0 14 14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.2,2.8 h7.6 v1.4 a3.8,3.8 0 0 1 -7.6,0 z"/><path d="M7,8 v2.2 M4.4,11.8 h5.2"/></g></svg></span>Date Night<span class="hm-option-check" aria-hidden="true">✓</span></button></div></div>
+    </div>
+  </div>
+
+  <!-- ======================= MAP (center stage) ======================= -->
+  <section class="hm-stage">
+    <figure class="hm-chartWrap hm-an" style="--d:.3s; margin:0">
+      <div class="hm-chart" id="hm-chart" role="group" aria-label="Distance and time compass around Home: rings double outward as the scope grows; Toronto stops in the north half (walking and transit), Raleigh stops in the south half (driven). Scroll to zoom, drag to roam."></div>
+      <div class="hm-zoom" role="group" aria-label="Map zoom">
+        <button type="button" id="hm-zin" aria-label="Zoom in" title="Zoom in">+</button>
+        <button type="button" id="hm-zout" aria-label="Zoom out" title="Zoom out">−</button>
+        <button type="button" id="hm-zfit" aria-label="Rescope to the current selection" title="Rescope to selection">⤢</button>
+      </div>
+      <div class="hm-scope" id="hm-scope" aria-hidden="true"></div>
+      <figcaption class="hm-cap" id="hm-caption">
+        <span class="hm-caption-main">Straight-line distance, on one shared scale.</span>
+        <span class="hm-caption-hint">Angles eased · Tap a stop to compare · Zoom to explore</span>
+      </figcaption>
+    </figure>
+  </section>
+
+  <!-- ======================= CITIES ======================= -->
+  <section class="hm-cities hm-an" style="--d:.5s">
+    <aside class="hm-city hm-maple-card" id="hm-card-toronto" tabindex="0">
+      <div class="hm-alias"><svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true"><path fill="currentColor" d="M7 .6 8.4 3l3.1-1.2-.7 3 3-1.1-2 2.3 3 1.3-3.4 1 .7 3.5-2.6-1.8L7 13.4 5.5 12.9l.6-1.9-2.4 1.7.7-3.5L-1 8.2l3-1.3L-.2 4.6l3 1.1-.7-3L5.6 3z"/></svg> Maple</div>
+      <h3>Toronto <span>· Ontario</span></h3>
+      <div class="hm-mode"><svg width="11" height="11" viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="2.6" r="1.9" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M7 5v3.4l-2.6 4M7 6l2.8 2 1.6-.6M7 8.4l-2.6.8L3 12M9.8 8l-.4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> We walk &amp; take transit</div>
+      <div class="hm-row"><span class="hm-row-k">Coffee</span><span class="hm-row-v"><b>Misc Coffee</b><i class="hm-u" data-km="0.7 km · ≈10 min walk" data-mi="0.4 mi · ≈10 min walk" data-time="≈10 min walk">0.7 km · ≈10 min walk</i></span></div><div class="hm-row"><span class="hm-row-k">Everyday Essentials</span><span class="hm-row-v"><b>Walmart</b><i class="hm-u" data-km="1.1 km · ≈15 min walk · +1 more" data-mi="0.7 mi · ≈15 min walk · +1 more" data-time="≈15 min walk · +1 more">1.1 km · ≈15 min walk · +1 more</i></span></div><div class="hm-row"><span class="hm-row-k">Work &amp; Volunteering</span><span class="hm-row-v"><b>Harbourfront Centre</b><i class="hm-u" data-km="3.6 km · ≈35 min transit" data-mi="2.2 mi · ≈35 min transit" data-time="≈35 min transit">3.6 km · ≈35 min transit</i></span></div><div class="hm-row"><span class="hm-row-k">Date Night</span><span class="hm-row-v"><b>And/Ore</b><i class="hm-u" data-km="0.9 km · ≈13 min walk" data-mi="0.5 mi · ≈13 min walk" data-time="≈13 min walk">0.9 km · ≈13 min walk</i></span></div>
+    </aside>
+    <aside class="hm-city hm-honey-card" id="hm-card-raleigh" tabindex="0">
+      <div class="hm-alias"><svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true"><path fill="currentColor" d="M7 0l6 3.5v7L7 14l-6-3.5v-7z"/></svg> Honey</div>
+      <h3>Raleigh <span>· North Carolina</span></h3>
+      <div class="hm-mode"><svg width="13" height="11" viewBox="0 0 16 14" aria-hidden="true"><path d="M1.5 9.5v-2.4c0-.6.3-1.1.8-1.4l1.5-1 1.6-2.6c.3-.5.8-.8 1.4-.8h3c.5 0 1 .3 1.3.7l2 2.7 2.2.9c.7.3 1.2 1 1.2 1.8v2.1h-1.2M4 9.5h8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="4.2" cy="10.6" r="1.5" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="11.6" cy="10.6" r="1.5" fill="none" stroke="currentColor" stroke-width="1.4"/></svg> We drive everywhere</div>
+      <div class="hm-row"><span class="hm-row-k">Coffee</span><span class="hm-row-v"><b>Black &amp; White</b><i class="hm-u" data-km="6.7 km · ≈11 min drive · +2 more" data-mi="4.2 mi · ≈11 min drive · +2 more" data-time="≈11 min drive · +2 more">6.7 km · ≈11 min drive · +2 more</i></span></div><div class="hm-row"><span class="hm-row-k">Everyday Essentials</span><span class="hm-row-v"><b>Food Lion</b><i class="hm-u" data-km="1.1 km · ≈4 min drive · +1 more" data-mi="0.7 mi · ≈4 min drive · +1 more" data-time="≈4 min drive · +1 more">1.1 km · ≈4 min drive · +1 more</i></span></div><div class="hm-row"><span class="hm-row-k">Work &amp; Volunteering</span><span class="hm-row-v"><b class="hm-mute">—</b><i>&nbsp;</i></span></div><div class="hm-row"><span class="hm-row-k">Date Night</span><span class="hm-row-v"><b>Mandolin</b><i class="hm-u" data-km="17 km · ≈26 min drive · now closed" data-mi="10 mi · ≈26 min drive · now closed" data-time="≈26 min drive · now closed">17 km · ≈26 min drive · now closed</i></span></div>
+    </aside>
+  </section>
+
+  <section class="hm-stats" id="hm-metrics" aria-live="polite">
+      <div class="hm-stat hm-s1 hm-an" style="--d:1.45s" id="hm-m1">
+        <div class="hm-big"><span class="hm-num" id="hm-m1-num">0</span><span class="hm-unit" id="hm-m1-unit"></span></div>
+        <div class="hm-lab" id="hm-m1-lab"></div>
+        <p id="hm-m1-p"></p>
+      </div>
+      <div class="hm-stat hm-s2 hm-an" style="--d:1.58s" id="hm-m2">
+        <div class="hm-big"><span class="hm-num" id="hm-m2-num">0</span><span class="hm-unit" id="hm-m2-unit"></span></div>
+        <div class="hm-lab">The widest ring</div>
+        <p id="hm-m2-p"></p>
+      </div>
+      <div class="hm-stat hm-s3 hm-an" style="--d:1.7s" id="hm-m3">
+        <div class="hm-big"><span class="hm-num" id="hm-m3a">0</span><span class="hm-arrow" id="hm-m3-arrow">→</span><span class="hm-num" id="hm-m3b">0</span></div>
+        <div class="hm-lab">Minutes · door to door</div>
+        <p id="hm-m3-p"></p>
+      </div>
+    </section>
+
+  <div class="hm-sig hm-an" style="--d:1.85s">two homes · <span class="hm-leaf">one everyday</span> · honey ✕ maple</div>
+</div>
+<div class="hm-grain" aria-hidden="true"></div>
+<noscript><p style="text-align:center;padding:20px;color:#aeb6c9">This visualization needs JavaScript — one static file, no external dependencies beyond web fonts.</p></noscript>
+
+<script id="hm-data">window.HM_DATA = {"chart":{"vb":840,"c":420,"rMaxPx":316,"ringKm":[0.5,1,2,4,8,16,32],"viewStops":[1,1.25,1.5,2,2.5,3,4,5,6,8,10,12,16,20,24,32,40],"ringMinutes":[2.5,5,10,20,40,80,160],"timeViewStops":[5,10,15,20,25,30,40,50,60,80,100,120,160,200],"aria":"Distance and time compass around Home: rings double outward as the scope grows; Toronto stops in the north half (walking and transit), Raleigh stops in the south half (driven). Scroll to zoom, drag to roam."},"meta":{"title":"Honey ✕ Maple — Two Homes, One Circle","description":"Compare everyday distances and estimated travel minutes from our front doors in Toronto (walking and transit) vs Raleigh (driving). Names only — never addresses."},"cities":{"toronto":{"name":"Toronto","region":"Ontario","alias":"Maple","aliasIcon":"leaf","accent":"#ff6f5d","soft":"#ff9078","mode":"walk","verb":"we walk or take transit","badge":"We walk & take transit","hemisphere":"north","tagline":"TORONTO · NORTH — WALK & TRANSIT","note":"The nearby errands are walks; the farther ones include transit, access on foot, and a little waiting.","home":{"label":"Home","lat":43.65179,"lon":-79.42289},"stopKeys":["walmart","misc","harbourfront","andore","ikea"]},"raleigh":{"name":"Raleigh","region":"North Carolina","alias":"Honey","aliasIcon":"hex","accent":"#ffb45c","soft":"#ffd08a","mode":"drive","verb":"we drive","badge":"We drive everywhere","hemisphere":"south","tagline":"RALEIGH · SOUTH — WE DRIVE","note":"Even “just down the road” starts with a car key — and the good coffee lives a highway away.","home":{"label":"Home","lat":35.94161,"lon":-78.57104},"stopKeys":["foodlion","jubala","sola","bw","target","mandolin"]}},"stops":[{"key":"walmart","city":"toronto","name":"Walmart","category":"essentials","catLabel":"Everyday Essentials","glyph":"cart","km":1.129,"angle":322,"labelDir":"left","routeKm":1.4,"travel":{"mode":"walk","walkingMinutes":15},"minutes":15,"timeNote":"≈15 min walk","timeDetail":"Stored trip estimate.","travelMode":"walk","bearingText":"west-north-west of home","distStr":{"km":"1.1 km · 0.7 mi","mi":"0.7 mi · 1.1 km"},"distShort":{"km":"1.1 km","mi":"0.7 mi"},"routeStr":{"km":"≈ 1.4 km","mi":"≈ 0.9 mi"},"ghostLabel":{"km":"1.1 km","mi":"0.7 mi"},"aria":"Walmart, Toronto — 1.1 km (0.7 mi) straight-line from home, about 15 minutes walking.","note":"Food Lion lands on almost the same circle — the same ring, worn by different shoes."},{"key":"misc","city":"toronto","name":"Misc Coffee","category":"coffee","catLabel":"Coffee","glyph":"cup","km":0.702,"angle":34,"labelDir":"right","routeKm":0.9,"travel":{"mode":"walk","walkingMinutes":10},"minutes":10,"timeNote":"≈10 min walk","timeDetail":"Stored trip estimate.","travelMode":"walk","bearingText":"due south of home","distStr":{"km":"0.7 km · 0.4 mi","mi":"0.4 mi · 0.7 km"},"distShort":{"km":"0.7 km","mi":"0.4 mi"},"routeStr":{"km":"≈ 0.9 km","mi":"≈ 0.6 mi"},"ghostLabel":{"km":"0.7 km","mi":"0.4 mi"},"aria":"Misc Coffee, Toronto — 0.7 km (0.4 mi) straight-line from home, about 10 minutes walking.","note":"Raleigh’s nearest espresso is a highway away — Toronto’s whole coffee ritual fits inside a rounding error of that drive."},{"key":"harbourfront","city":"toronto","name":"Harbourfront Centre","category":"work","catLabel":"Work & Volunteering","glyph":"case","km":3.613,"angle":70,"labelDir":"left","routeKm":4.4,"travel":{"mode":"transit","walkingMinutes":50,"transitMinutes":35,"source":{"provider":"Google Maps","originLabel":"Trinity Bellwoods Park","originKind":"public-neighbourhood-proxy","checkedOn":"2026-10-11","observedMinutes":34,"roundedToMinutes":5}},"minutes":35,"timeNote":"≈35 min transit","timeDetail":"Approximate Google Maps trip from Trinity Bellwoods Park (neighbourhood proxy), checked 2026-10-11. Rounded to 5 minutes; actual departure and service may vary.","travelMode":"transit","bearingText":"east-south-east of home","distStr":{"km":"3.6 km · 2.2 mi","mi":"2.2 mi · 3.6 km"},"distShort":{"km":"3.6 km","mi":"2.2 mi"},"routeStr":{"km":"≈ 4.4 km","mi":"≈ 2.7 mi"},"ghostLabel":{"km":"3.6 km","mi":"2.2 mi"},"aria":"Harbourfront Centre, Toronto — 3.6 km (2.2 mi) straight-line from home, about 35 minutes by public transit.","note":"A Toronto-only ring — Elijah’s volunteer post; Raleigh has nothing out here yet."},{"key":"andore","city":"toronto","name":"And/Ore","category":"date-night","catLabel":"Date Night","glyph":"date","km":0.883,"angle":12,"labelDir":"right","routeKm":1.1,"travel":{"mode":"walk","walkingMinutes":13},"minutes":13,"timeNote":"≈13 min walk","timeDetail":"Stored trip estimate.","travelMode":"walk","bearingText":"south-south-east of home","distStr":{"km":"0.9 km · 0.5 mi","mi":"0.5 mi · 0.9 km"},"distShort":{"km":"0.9 km","mi":"0.5 mi"},"routeStr":{"km":"≈ 1.1 km","mi":"≈ 0.7 mi"},"ghostLabel":{"km":"0.9 km","mi":"0.5 mi"},"aria":"And/Ore, Toronto — 0.9 km (0.5 mi) straight-line from home, about 13 minutes walking.","note":"Date night, Toronto-style — a short stroll. Mandolin’s old ring would swallow this whole walk whole."},{"key":"ikea","city":"toronto","name":"IKEA","category":"essentials","catLabel":"Everyday Essentials","glyph":"cart","km":3.299,"angle":48,"labelDir":"right","routeKm":4.4,"travel":{"mode":"transit","walkingMinutes":55,"transitMinutes":35,"source":{"provider":"Google Maps","originLabel":"Trinity Bellwoods Park","originKind":"public-neighbourhood-proxy","checkedOn":"2026-10-11","observedMinutes":33,"roundedToMinutes":5}},"minutes":35,"timeNote":"≈35 min transit","timeDetail":"Approximate Google Maps trip from Trinity Bellwoods Park (neighbourhood proxy), checked 2026-10-11. Rounded to 5 minutes; actual departure and service may vary.","travelMode":"transit","bearingText":"east-north-east of home","distStr":{"km":"3.3 km · 2.0 mi","mi":"2.0 mi · 3.3 km"},"distShort":{"km":"3.3 km","mi":"2.0 mi"},"routeStr":{"km":"≈ 4.4 km","mi":"≈ 2.7 mi"},"ghostLabel":{"km":"3.3 km","mi":"2.0 mi"},"aria":"IKEA, Toronto — 3.3 km (2.0 mi) straight-line from home, about 35 minutes by public transit.","note":"Flat-pack furniture without firing up an engine — downtown IKEA sits inside Harbourfront’s ring."},{"key":"foodlion","city":"raleigh","name":"Food Lion","category":"essentials","catLabel":"Everyday Essentials","glyph":"cart","km":1.064,"angle":142,"labelDir":"right","routeKm":1.4,"travel":{"mode":"drive","drivingMinutes":4},"minutes":4,"timeNote":"≈4 min drive","timeDetail":"Stored trip estimate.","travelMode":"drive","bearingText":"due east of home","distStr":{"km":"1.1 km · 0.7 mi","mi":"0.7 mi · 1.1 km"},"distShort":{"km":"1.1 km","mi":"0.7 mi"},"routeStr":{"km":"≈ 1.4 km","mi":"≈ 0.9 mi"},"ghostLabel":{"km":"1.1 km","mi":"0.7 mi"},"aria":"Food Lion, Raleigh — 1.1 km (0.7 mi) straight-line from home, about 4 minutes driving.","note":"Walmart lands on almost the same circle — but down there, that radius comes with a parking lot."},{"key":"jubala","city":"raleigh","name":"Jubala Coffee","category":"coffee","catLabel":"Coffee","glyph":"cup","km":7.527,"angle":214,"labelDir":"left","routeKm":9.9,"travel":{"mode":"drive","drivingMinutes":12},"minutes":12,"timeNote":"≈12 min drive","timeDetail":"Stored trip estimate.","travelMode":"drive","bearingText":"south-west of home","distStr":{"km":"7.5 km · 4.7 mi","mi":"4.7 mi · 7.5 km"},"distShort":{"km":"7.5 km","mi":"4.7 mi"},"routeStr":{"km":"≈ 9.9 km","mi":"≈ 6.2 mi"},"ghostLabel":{"km":"7.5 km","mi":"4.7 mi"},"aria":"Jubala Coffee, Raleigh — 7.5 km (4.7 mi) straight-line from home, about 12 minutes driving.","note":"Misc sits ×10.7 closer in — Toronto’s whole coffee ritual fits inside a rounding error of this drive."},{"key":"sola","city":"raleigh","name":"Sola Coffee","category":"coffee","catLabel":"Coffee","glyph":"cup","km":10.174,"angle":250,"labelDir":"left","routeKm":13.0,"travel":{"mode":"drive","drivingMinutes":18},"minutes":18,"timeNote":"≈18 min drive","timeDetail":"Stored trip estimate.","travelMode":"drive","bearingText":"south-west of home","distStr":{"km":"10 km · 6.3 mi","mi":"6.3 mi · 10 km"},"distShort":{"km":"10 km","mi":"6.3 mi"},"routeStr":{"km":"≈ 13 km","mi":"≈ 8.1 mi"},"ghostLabel":{"km":"10 km","mi":"6.3 mi"},"aria":"Sola Coffee, Raleigh — 10 km (6.3 mi) straight-line from home, about 18 minutes driving.","note":"Raleigh’s coffee circle keeps growing — Sola sits even farther out than Jubala."},{"key":"bw","city":"raleigh","name":"Black & White","category":"coffee","catLabel":"Coffee","glyph":"cup","km":6.733,"angle":108,"labelDir":"left","routeKm":8.2,"travel":{"mode":"drive","drivingMinutes":11},"minutes":11,"timeNote":"≈11 min drive","timeDetail":"Stored trip estimate.","travelMode":"drive","bearingText":"north-east of home","distStr":{"km":"6.7 km · 4.2 mi","mi":"4.2 mi · 6.7 km"},"distShort":{"km":"6.7 km","mi":"4.2 mi"},"routeStr":{"km":"≈ 8.2 km","mi":"≈ 5.1 mi"},"ghostLabel":{"km":"6.7 km","mi":"4.2 mi"},"aria":"Black &amp; White, Raleigh — 6.7 km (4.2 mi) straight-line from home, about 11 minutes driving.","note":"The original Wake Forest café — the nearest thing to a corner shop, and it’s still a 6.7 km hop from the front door."},{"key":"target","city":"raleigh","name":"Target","category":"essentials","catLabel":"Everyday Essentials","glyph":"cart","km":4.534,"angle":128,"labelDir":"right","routeKm":5.6,"travel":{"mode":"drive","drivingMinutes":8},"minutes":8,"timeNote":"≈8 min drive","timeDetail":"Stored trip estimate.","travelMode":"drive","bearingText":"north-east of home","distStr":{"km":"4.5 km · 2.8 mi","mi":"2.8 mi · 4.5 km"},"distShort":{"km":"4.5 km","mi":"2.8 mi"},"routeStr":{"km":"≈ 5.6 km","mi":"≈ 3.5 mi"},"ghostLabel":{"km":"4.5 km","mi":"2.8 mi"},"aria":"Target, Raleigh — 4.5 km (2.8 mi) straight-line from home, about 8 minutes driving.","note":"Four kilometres of suburb for the same cart of stuff Toronto walks to."},{"key":"mandolin","city":"raleigh","name":"Mandolin","category":"date-night","catLabel":"Date Night","glyph":"date","km":16.572,"angle":210,"labelDir":"left","routeKm":21.0,"travel":{"mode":"drive","drivingMinutes":26},"minutes":26,"timeNote":"≈26 min drive","timeDetail":"Stored trip estimate.","travelMode":"drive","bearingText":"south-south-west of home","distStr":{"km":"17 km · 10 mi","mi":"10 mi · 17 km"},"distShort":{"km":"17 km","mi":"10 mi"},"routeStr":{"km":"≈ 21 km","mi":"≈ 13 mi"},"ghostLabel":{"km":"17 km","mi":"10 mi"},"aria":"Mandolin, Raleigh — 17 km (10 mi) straight-line from home, about 26 minutes driving.","note":"A closed chapter, kept on the map — date night once meant a half-hour drive south.","status":"closed"}],"categories":[{"key":"coffee","label":"Coffee","glyph":"cup","metric":{"scope":"coffee","title":"The coffee gap","flavor":"The nearest espresso is a highway away.","widestFlavor":"Raleigh’s coffee circle doesn’t quit.","minutesFlavor":"Up north it’s a stroll; down south it’s a commute."}},{"key":"essentials","label":"Everyday Essentials","glyph":"cart","metric":{"scope":"essentials","title":"The essentials gap","flavor":"Same cart of stuff — down south it comes with a parking lot.","widestFlavor":"The big-box run still crosses most of Toronto.","minutesFlavor":"A walk or transit ride up north; a drive down south."}},{"key":"work","label":"Work & Volunteering","glyph":"case","metric":{"scope":"work & volunteering","title":"A Toronto-only ring","soloFlavor":"Raleigh has nothing in this circle yet.","widestFlavor":"The volunteer post holds the whole map.","minutesFlavor":"No Raleigh counterpart to compare."}},{"key":"date-night","label":"Date Night","glyph":"date","metric":{"scope":"date-night","title":"The date-night gap","flavor":"Up north the night out is a stroll; down south it’s a road trip.","widestFlavor":"A closed chapter keeps the widest ring of all.","minutesFlavor":"The one errand where the stroll wins — dinner is closer on foot than by car."}}],"allMetric":{"scope":"everyday","title":"The everyday gap","flavor":"The pull of the suburb, drawn to scale.","widestFlavor":"Pick a category — or zoom in — to find the walkable core.","minutesFlavor":"Nearby walks and farther transit trips share a clock with Raleigh’s drives."}};</script>
+<script>
+/* ============================================================
+   HONEY ✕ MAPLE — assets/app.js
+   Runtime renderer + interactions. All geometry/numbers come
+   from window.HM_DATA, injected by tools/build.py. No network,
+   no dependencies. Edit, then rebuild.
+
+   The chart is a live world: a <g id="hm-world"> in km-space
+   (Home at 0,0) that is zoomed + panned with one transform.
+   Choosing a category hides every other stop and rescopes
+   the view to the selection; the bottom metrics recompute.
+   ============================================================ */
+(function () {
+'use strict';
+
+const D = window.HM_DATA;
+if (!D) { console.error('HM_DATA missing — regenerate index.html with tools/build.py'); return; }
+
+const VB = D.chart.vb, C = D.chart.c, RMAX = D.chart.rMaxPx;
+const RINGS = D.chart.ringKm;
+const timeRings = D.chart.ringMinutes;
+const views = () => MEASURE === 'time' ? D.chart.timeViewStops : D.chart.viewStops;
+const KM_MI = 1.609344;
+const minScope = () => views()[0] * 0.4;
+const maxScope = () => views()[views().length - 1];
+
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const SKIP_INTRO = new URLSearchParams(window.location.search).get('reveal') === 'now';
+
+let UNIT = 'km';
+let MEASURE = 'distance';
+let measureMix = 0; // 0 = km geometry, 1 = minutes; a toggle morphs every radius.
+let pinnedKey = null;
+let hoverKey = null;
+let filterCat = 'all';
+let cityEmph = null;
+
+/* view = what the map shows: km = radius of the visible disc,
+   In Time view the same coordinates are minutes; km is the legacy scope name.
+   cx/cy = world offset of the viewport centre (Home at 0,0). */
+const view = { km: 20, cx: 0, cy: 0 };
+let tweenReq = 0;
+
+/* ---------- tiny helpers ---------- */
+const esc = s => String(s).replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>');
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const stopById = k => D.stops.find(s => s.key === k);
+const stopsOf = cat => (cat === 'all' ? D.stops : D.stops.filter(s => s.category === cat));
+const catOf = cat => D.categories.find(c => c.key === cat);
+const metricOf = cat => (cat === 'all' ? D.allMetric : catOf(cat).metric);
+const dispName = s => (s.status === 'closed' ? s.name + ' (closed)' : s.name);
+const fkm = k => (Math.abs(k - Math.round(k)) < 1e-9 ? String(Math.round(k)) : (k >= 10 ? k.toFixed(0) : k.toFixed(1)));
+const fmi = k => fkm(k / KM_MI);
+const udist = k => (UNIT === 'km'
+  ? fkm(k) + ' km (' + fmi(k) + ' mi)'
+  : fmi(k) + ' mi (' + fkm(k) + ' km)');
+const scale = () => RMAX / view.km;
+const radius = s => s.km + (s.minutes - s.km) * measureMix;
+const targetRadius = s => MEASURE === 'time' ? s.minutes : s.km;
+const ringRadius = r => r.rk + (timeRings[r.index] - r.rk) * measureMix;
+const shortMeasure = s => MEASURE === 'time' ? '≈' + s.minutes + ' min' : s.distShort[UNIT];
+const modeLabel = s => ({ walk: 'On foot', transit: 'Public transit', drive: 'By car' }[s.travelMode]);
+const modesOf = stops => [...new Set(stops.map(s => ({walk:'walking', transit:'transit', drive:'driving'}[s.travelMode])))].join(' & ');
+const fitScope = maxKm => {
+  const t = maxKm * 1.15;
+  for (const v of views()) if (v >= t) return v;
+  return maxScope();
+};
+/* world (km-space) position: angle 0 = up, clockwise */
+const wx = s => radius(s) * Math.sin(s.angle * Math.PI / 180);
+const wy = s => -radius(s) * Math.cos(s.angle * Math.PI / 180);
+const sX = s => C + (wx(s) - view.cx) * scale();
+const sY = s => C + (wy(s) - view.cy) * scale();
+
+/* ---------- small icons (centred on 0,0, ~±6 units) ---------- */
+const ICONS = {
+  cup:  '<path d="M-2.7,-2.7 h5.4 v2 a2.7,2.7 0 0 1 -5.4,0 z"/>'
+       + '<path d="M-1.3,-4.6 v1.3 M1.3,-4.6 v1.3" fill="none" stroke-width="1.1"/>',
+  cart: '<path d="M-3.4,-2.6 h6.8 l-1.2,3.1 h-4.4 z"/>'
+       + '<circle cx="-2.1" cy="3.2" r="1.05"/><circle cx="2.3" cy="3.2" r="1.05"/>',
+  case: '<path d="M-4.2,-1.6 h8.4 v4.6 a1.3,1.3 0 0 1 -1.3,1.3 h-5.8 a1.3,1.3 0 0 1 -1.3,-1.3 z"/>'
+       + '<path d="M-1.7,-1.6 v-1 a1.1,1.1 0 0 1 1.1,-1.1 h1.2 a1.1,1.1 0 0 1 1.1,1.1 v1" fill="none" stroke-width="1.2"/>',
+  date: '<path d="M-2.8,-4.4 h5.6 v1.7 a2.8,2.8 0 0 1 -5.6,0 z" fill="none" stroke-width="1.1"/>'
+       + '<path d="M0,-0.6 v3.4 M-1.8,3.9 h3.6" fill="none" stroke-width="1.1"/>',
+};
+
+/* ---------- decorative skylines (pure ornament, presentation-only) ---------- */
+function skyPath(x0, dir, arr) {
+  let p = 'M' + x0 + ',' + C, x = x0;
+  for (const [w, h, g] of arr) { p += ' v' + (dir * h) + ' h' + w + ' v' + (-dir * h) + ' h' + g; x += w + g; }
+  return p + ' Z';
+}
+const SKY = {
+  toronto: skyPath(C - 195, -1, [[16,12,6],[22,18,4],[10,24,3],[16,11,5],[26,15,4],[16,20,3],[12,9,5],[16,14,5],[14,10,5],[20,16,0]]),
+  raleigh: skyPath(C - 130,  1, [[18,9,7],[14,13,6],[24,10,5],[12,7,6],[20,14,4],[14,11,0]]),
+};
+
+/* ---------- build the chart (world geometry in km-space) ---------- */
+function buildChart() {
+  const p = [];
+  p.push('<svg id="hm-svg" viewBox="0 0 ' + VB + ' ' + VB + '" role="group" aria-label="' + esc(D.chart.aria) + '">');
+
+  p.push('<defs>'
+    + '<radialGradient id="hm-gM" gradientUnits="userSpaceOnUse" cx="' + C + '" cy="' + (C - 40) + '" r="' + RMAX + '">'
+      + '<stop offset="0" stop-color="' + D.cities.toronto.accent + '" stop-opacity=".085"/><stop offset=".55" stop-opacity=".03" stop-color="' + D.cities.toronto.accent + '"/><stop offset="1" stop-color="' + D.cities.toronto.accent + '" stop-opacity="0"/></radialGradient>'
+    + '<radialGradient id="hm-gH" gradientUnits="userSpaceOnUse" cx="' + C + '" cy="' + (C + 40) + '" r="' + RMAX + '">'
+      + '<stop offset="0" stop-color="' + D.cities.raleigh.accent + '" stop-opacity=".08"/><stop offset=".55" stop-color="' + D.cities.raleigh.accent + '" stop-opacity=".03"/><stop offset="1" stop-color="' + D.cities.raleigh.accent + '" stop-opacity="0"/></radialGradient>'
+    + '<radialGradient id="hm-gHome"><stop offset="0" stop-color="#f4ecdc" stop-opacity=".5"/><stop offset="1" stop-color="#f4ecdc" stop-opacity="0"/></radialGradient>'
+  + '</defs>');
+
+  /* home-anchored furniture: tints, halo, skylines (screen space, follows Home) */
+  p.push('<g id="hm-fixed">'
+    + '<path d="M' + (C - RMAX) + ',' + C + ' A' + RMAX + ',' + RMAX + ' 0 0 1 ' + (C + RMAX) + ',' + C + ' Z" fill="url(#hm-gM)"/>'
+    + '<path d="M' + (C - RMAX) + ',' + C + ' A' + RMAX + ',' + RMAX + ' 0 0 0 ' + (C + RMAX) + ',' + C + ' Z" fill="url(#hm-gH)"/>'
+    + '<circle cx="' + C + '" cy="' + C + '" r="34" fill="none" stroke="#f4ecdc" stroke-opacity=".08"/>'
+    + '<g class="hm-sky hm-pre-fade" style="--d:.5s" fill="#dbe2f5">' + SKY.toronto
+      + '<path d="M' + (C + 38) + ',' + C + ' v-32" stroke="#dbe2f5" stroke-width="2.6" fill="none"/>'
+      + '<ellipse cx="' + (C + 38) + '" cy="' + (C - 25) + '" rx="8" ry="3.4"/>'
+      + '<circle cx="' + (C + 38) + '" cy="' + (C - 35) + '" r="1.6"/>'
+    + '</g>'
+    + '<g class="hm-sky hm-pre-fade" style="--d:.55s" fill="#ffe0b0">' + SKY.raleigh
+      + '<path d="M' + (C + 96) + ',' + C + ' l7,-13 l7,13 z M' + (C + 116) + ',' + C + ' l6,-11 l6,11 z M' + (C + 134) + ',' + C + ' l5,-9 l5,9 z"/>'
+      + '<path d="M' + (C - 152) + ',' + C + ' a9,9 0 0 0 18,0 z"/>'
+    + '</g>'
+  + '</g>');
+
+  /* corner tags (chart furniture, fixed) */
+  p.push('<text class="hm-tag hm-pre-fade" style="--d:.7s" x="' + C + '" y="46" text-anchor="middle">' + D.cities.toronto.tagline + '</text>');
+  p.push('<text class="hm-tag hm-pre-fade" style="--d:.75s" x="' + C + '" y="' + (VB - 30) + '" text-anchor="middle">' + D.cities.raleigh.tagline + '</text>');
+
+  /* ---------- the live world (km-space) ---------- */
+  p.push('<g id="hm-world">');
+
+  /* rings: ladder of doubling circles + counter-scaled labels/ticks */
+  for (const rk of RINGS) {
+    const delay = (0.06 + rk * 0.05).toFixed(2);
+    p.push('<circle class="hm-ring hm-pre-ring" data-r="' + rk + '" style="--d:' + delay + 's" cx="0" cy="0" r="' + rk + '"/>');
+  }
+  for (const rk of RINGS) {
+    p.push('<g class="hm-ringwrap hm-pre-fade" data-r="' + rk + '" style="--d:' + (0.1 + rk * 0.05).toFixed(2) + 's" transform="translate(0 ' + (-rk) + ')">'
+      + '<g class="hm-fix">'
+      + '<text class="hm-ringlab" x="4" y="-8"></text>'
+      + '<line class="hm-ringtick" x1="0" y1="-6" x2="0" y2="6" stroke="rgba(255,255,255,.22)" stroke-width="1.4"/>'
+      + '</g></g>');
+  }
+
+  /* equator */
+  p.push('<line class="hm-eq hm-pre-path" style="--len:22;--d:.5s" stroke-dasharray="22" x1="-42" y1="0" x2="-20" y2="0"/>');
+  p.push('<line class="hm-eq hm-pre-path" style="--len:22;--d:.5s" stroke-dasharray="22" x1="20" y1="0" x2="42" y2="0"/>');
+
+  /* paths */
+  D.stops.forEach(function (s, i) {
+    const city = D.cities[s.city];
+    const left = s.labelDir === 'left';
+    const d = (0.85 + i * 0.09).toFixed(2) + 's';
+    const g = '<g class="hm-pathg hm-anf" data-g="' + s.key + '" data-city="' + s.city + '" data-cat="' + s.category + '" style="--d:' + d + '">';
+    const x = wx(s).toFixed(3), y = wy(s).toFixed(3);
+    if (s.travelMode === 'walk') {
+      const dx = wx(s), dy = wy(s), sgn = left ? -1 : 1;
+      const cpx = (dx / 2 - sgn * 0.24 * dy).toFixed(3), cpy = (dy / 2 + sgn * 0.24 * dx).toFixed(3);
+      p.push(g + '<path class="hm-pathw hm-step" stroke="' + city.soft + '" d="M0,0 Q' + cpx + ',' + cpy + ' ' + x + ',' + y + '"/></g>');
+    } else if (s.travelMode === 'transit') {
+      p.push(g + '<path class="hm-transitcase" stroke="' + city.accent + '" d="M0,0 L' + x + ',' + y + '"/>'
+        + '<path class="hm-transitline hm-flow" stroke="' + city.soft + '" d="M0,0 L' + x + ',' + y + '"/></g>');
+    } else {
+      p.push(g
+        + '<path class="hm-roadcase hm-pre-path" style="--len:' + s.km.toFixed(2) + ';--d:' + d + '" stroke-dasharray="' + s.km.toFixed(2) + '" stroke="' + city.accent + '" d="M0,0 L' + x + ',' + y + '"/>'
+        + '<path class="hm-roadline hm-flow hm-pre-fade" style="--d:' + (1.15 + i * 0.09).toFixed(2) + 's" stroke="' + city.soft + '" d="M0,0 L' + x + ',' + y + '"/>'
+      + '</g>');
+    }
+  });
+
+  /* stops */
+  D.stops.forEach(function (s, i) {
+    const city = D.cities[s.city];
+    const left = s.labelDir === 'left';
+    const nx = left ? -22 : 22, ny = left ? -2 : 3, anchor = left ? 'end' : 'start';
+    const labels = '<text class="hm-stopname" x="' + nx + '" y="' + ny + '" text-anchor="' + anchor + '">' + esc(dispName(s)) + '</text>'
+      + '<text class="hm-stopsub hm-u" data-km="' + esc(s.distShort.km) + '" data-mi="' + esc(s.distShort.mi) + '" x="' + nx + '" y="' + (ny + 28) + '" text-anchor="' + anchor + '">' + esc(s.distShort.km) + '</text>';
+    p.push('<g class="hm-ptg" data-g="' + s.key + '" data-city="' + s.city + '" data-cat="' + s.category + '" transform="translate(' + wx(s).toFixed(3) + ' ' + wy(s).toFixed(3) + ')" tabindex="0" role="button" aria-label="' + esc(s.aria) + '">'
+      + '<g class="hm-anf" style="--d:' + (1.25 + i * 0.09).toFixed(2) + 's">'
+      + '<g class="hm-fix">'
+      + '<circle class="hm-glow" cx="0" cy="0" r="18" fill="' + city.accent + '" opacity=".14"/>'
+      + '<circle class="hm-core" cx="0" cy="0" r="10.5" fill="' + city.accent + '" stroke="rgba(9,12,18,.6)" stroke-width="1.6"/>'
+      + '<g transform="scale(1.25)" fill="rgba(9,12,18,.8)" stroke="rgba(9,12,18,.8)" stroke-linecap="round">' + ICONS[s.glyph] + '</g>'
+      + labels
+      + '</g></g></g>');
+  });
+
+  /* ghost comparison ring */
+  p.push('<g class="hm-ghost" id="hm-ghost">'
+    + '<circle id="hm-ghost-c" cx="0" cy="0" r="1"/>'
+    + '<g id="hm-ghost-fix" class="hm-fix"><text id="hm-ghost-lab" class="hm-ghostlab" x="8" y="0"></text></g>'
+  + '</g>');
+
+  /* home */
+  p.push('<g class="hm-homeg"><g class="hm-fix">'
+    + '<circle class="hm-halo hm-pre-fade" style="--d:.1s" cx="0" cy="0" r="22" fill="none" stroke="#f4ecdc" stroke-opacity=".4"/>'
+    + '<circle cx="0" cy="0" r="14" fill="url(#hm-gHome)"/>'
+    + '<circle class="hm-pre-fade" style="--d:.05s" cx="0" cy="0" r="9" fill="#f4ecdc" stroke="rgba(9,12,18,.55)" stroke-width="1.8"/>'
+    + '<text class="hm-home-lab hm-pre-fade" style="--d:.55s" x="-16" y="34" text-anchor="end">HOME</text>'
+  + '</g></g>');
+
+  p.push('</g></svg>');
+  document.getElementById('hm-chart').innerHTML = p.join('');
+}
+
+/* ---------- boot the DOM ---------- */
+buildChart();
+
+const svg = document.getElementById('hm-svg');
+const world = document.getElementById('hm-world');
+const hmFixed = document.getElementById('hm-fixed');
+const ghost = document.getElementById('hm-ghost');
+const ghostC = document.getElementById('hm-ghost-c');
+const ghostLab = document.getElementById('hm-ghost-lab');
+const ghostFix = document.getElementById('hm-ghost-fix');
+const wrap = document.querySelector('.hm-chartWrap');
+const scopeEl = document.getElementById('hm-scope');
+
+const tip = document.createElement('div');
+tip.id = 'hm-tip'; tip.className = 'hm-tip'; tip.setAttribute('role', 'status');
+wrap.appendChild(tip);
+
+const ringEls = RINGS.map((rk, index) => ({
+  rk, index,
+  circle: svg.querySelector('.hm-ring[data-r="' + rk + '"]'),
+  label: svg.querySelector('.hm-ringwrap[data-r="' + rk + '"] .hm-ringlab'),
+  tick: svg.querySelector('.hm-ringwrap[data-r="' + rk + '"] .hm-ringtick'),
+  wrapEl: svg.querySelector('.hm-ringwrap[data-r="' + rk + '"]'),
+  on: false,
+}));
+
+// Reuse nodes throughout the morph so focus, pinned stops and pointer capture survive.
+const stopEls = D.stops.map(st => ({
+  st,
+  dot: svg.querySelector('.hm-ptg[data-g="' + st.key + '"]'),
+  paths: [...svg.querySelectorAll('.hm-pathg[data-g="' + st.key + '"] path')],
+}));
+function updateGeometry() {
+  stopEls.forEach(({st, dot, paths}) => {
+    const x = wx(st), y = wy(st);
+    dot.setAttribute('transform', 'translate(' + x + ' ' + y + ')');
+    const sign = st.labelDir === 'left' ? -1 : 1;
+    const path = st.travelMode === 'walk'
+      ? 'M0,0 Q' + (x / 2 - sign * .24 * y) + ',' + (y / 2 + sign * .24 * x) + ' ' + x + ',' + y
+      : 'M0,0 L' + x + ',' + y;
+    paths.forEach(el => el.setAttribute('d', path));
+  });
+  const active = stopById(pinnedKey || hoverKey);
+  if (active) ghostC.setAttribute('r', radius(active));
+}
+
+function refreshMeasureText() {
+  document.querySelectorAll('.hm-u').forEach(el => {
+    const value = el.dataset[MEASURE === 'time' ? 'time' : UNIT];
+    if (value != null) el.textContent = value;
+  });
+  stopEls.forEach(({st, dot}) => {
+    dot.querySelector('.hm-stopsub').textContent = shortMeasure(st);
+    dot.setAttribute('aria-label', MEASURE === 'time'
+      ? dispName(st) + ', ' + D.cities[st.city].name + ' — about ' + st.minutes + ' minutes, ' + modeLabel(st)
+      : st.aria);
+  });
+  // The nearest destination per category follows the chosen measurement too.
+  Object.keys(D.cities).forEach(city => {
+    document.querySelectorAll('#hm-card-' + city + ' .hm-row').forEach((row, i) => {
+      const stops = D.stops.filter(st => st.city === city && st.category === D.categories[i].key);
+      if (!stops.length) return;
+      const near = stops.reduce((a, st) => targetRadius(st) < targetRadius(a) ? st : a);
+      row.querySelector('b').textContent = near.name;
+      const more = stops.length > 1 ? ' · +' + (stops.length - 1) + ' more' : '';
+      const closed = near.status === 'closed' ? ' · now closed' : '';
+      row.querySelector('i').textContent = (MEASURE === 'time' ? near.timeNote
+        : near.distShort[UNIT] + ' · ' + near.timeNote) + more + closed;
+    });
+  });
+  document.getElementById('hm-caption').innerHTML = '<span class="hm-caption-main">'
+    + (MEASURE === 'time' ? 'Approximate travel minutes, on one shared scale.' : 'Straight-line distance, on one shared scale.')
+    + '</span><span class="hm-caption-hint">Angles eased · Tap a stop to compare · Zoom to explore</span>';
+  const description = (MEASURE === 'time' ? 'Travel time in minutes' : 'Straight-line distance')
+    + ' from Home. Toronto above, Raleigh below. Scroll to zoom, drag to roam.';
+  svg.setAttribute('aria-label', description);
+  document.getElementById('hm-chart').setAttribute('aria-label', description);
+}
+
+function setMeasure(next) {
+  if (next === MEASURE) return;
+  MEASURE = next;
+  document.getElementById('hm-btn-distance').setAttribute('aria-pressed', String(next === 'distance'));
+  document.getElementById('hm-btn-time').setAttribute('aria-pressed', String(next === 'time'));
+  document.getElementById('hm-units').hidden = next === 'time';
+  document.getElementById('hm-app').dataset.measure = next;
+  document.querySelector('.hm-measure').dataset.active = next;
+  refreshMeasureText();
+  renderMetrics();
+  if (pinnedKey || hoverKey) activateStop(pinnedKey || hoverKey);
+  const max = stopsOf(filterCat).reduce((m, st) => Math.max(m, targetRadius(st)), 0);
+  // Morph all stop/path/ring radii together with the shared logarithmic zoom.
+  tweenView(fitScope(max), 0, 0, 950);
+}
+
+/* ---------- view plumbing ---------- */
+function clampCenter() {
+  const maxOff = RMAX * 0.92 / scale();
+  const d = Math.hypot(view.cx, view.cy);
+  if (d > maxOff) { view.cx *= maxOff / d; view.cy *= maxOff / d; }
+}
+
+function tweenView(km, cx, cy, dur) {
+  cancelAnimationFrame(tweenReq);
+  km = clamp(km, minScope(), maxScope());
+  const targetMix = MEASURE === 'time' ? 1 : 0;
+  if (!dur || reduceMotion) { measureMix = targetMix; view.km = km; view.cx = cx; view.cy = cy; clampCenter(); applyView(); return; }
+  const f = { km: view.km, cx: view.cx, cy: view.cy, mix: measureMix }, t0 = performance.now();
+  const step = function (now) {
+    const t = Math.min(1, (now - t0) / dur);
+    const e = t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    measureMix = f.mix + (targetMix - f.mix) * e;
+    view.km = f.km * Math.pow(km / f.km, e);   /* log-space zoom */
+    view.cx = f.cx + (cx - f.cx) * e;
+    view.cy = f.cy + (cy - f.cy) * e;
+    clampCenter();
+    applyView();
+    if (t < 1) tweenReq = requestAnimationFrame(step);
+  };
+  tweenReq = requestAnimationFrame(step);
+}
+
+/* keep the km-space point under a viewBox point fixed while zooming */
+function zoomTo(km2, vbPt) {
+  const s1 = scale();
+  const kx = (vbPt.x - C) / s1 + view.cx;
+  const ky = (vbPt.y - C) / s1 + view.cy;
+  const s2 = RMAX / km2;
+  view.km = km2;
+  view.cx = kx - (vbPt.x - C) / s2;
+  view.cy = ky - (vbPt.y - C) / s2;
+  clampCenter();
+}
+
+function clientToVb(cx, cy) {
+  const r = svg.getBoundingClientRect();
+  return { x: (cx - r.left) * VB / r.width, y: (cy - r.top) * VB / r.width };
+}
+
+/* ---------- label decluttering (estimated boxes, greedy) ---------- */
+const inter = (a, b) => a.x1 < b.x2 && b.x1 < a.x2 && a.y1 < b.y2 && b.y1 < a.y2;
+
+function setLabelSide(name, sub, side) {
+  const left = side === 'left';
+  const ny = left ? -2 : 3;
+  name.setAttribute('x', left ? -22 : 22);
+  name.setAttribute('y', ny);
+  name.setAttribute('text-anchor', left ? 'end' : 'start');
+  sub.setAttribute('x', left ? -22 : 22);
+  sub.setAttribute('y', ny + 28);
+  sub.setAttribute('text-anchor', left ? 'end' : 'start');
+}
+
+function declutter() {
+  const s = scale();
+  const vis = stopsOf(filterCat).slice().sort((a, b) => radius(b) - radius(a));
+  const placed = [];
+  const hit = box => placed.some(o => inter(o, box));
+
+  /* Home dot + HOME text + every visible stop dot are obstacles */
+  const hx = C - view.cx * s, hy = C - view.cy * s;
+  placed.push({ x1: hx - 16, y1: hy - 16, x2: hx + 16, y2: hy + 16 });
+  placed.push({ x1: hx - 16 - 82, y1: hy + 34 - 13, x2: hx - 16, y2: hy + 34 + 4 });
+  vis.forEach(st => {
+    const x = sX(st), y = sY(st);
+    placed.push({ x1: x - 13, y1: y - 13, x2: x + 13, y2: y + 13 });
+  });
+
+  vis.forEach(st => {
+    const g = svg.querySelector('.hm-ptg[data-g="' + st.key + '"]');
+    if (!g) return;
+    const name = g.querySelector('.hm-stopname');
+    const sub = g.querySelector('.hm-stopsub');
+    const x = sX(st), y = sY(st);
+    let done = false;
+    const sides = [st.labelDir, st.labelDir === 'left' ? 'right' : 'left'];
+    for (const side of sides) {
+      setLabelSide(name, sub, side);
+      name.style.display = ''; sub.style.display = '';
+      // Use real font bounds; character-count estimates missed minute-label collisions.
+      const boxOf = el => {
+        const b = el.getBBox(), pad = 5;
+        return { x1: x + b.x - pad, y1: y + b.y - pad,
+          x2: x + b.x + b.width + pad, y2: y + b.y + b.height + pad };
+      };
+      const nb = boxOf(name), sb = boxOf(sub);
+      const inside = nb.x1 >= 4 && sb.x1 >= 4 && nb.x2 <= VB - 4 && sb.x2 <= VB - 4;
+      if (inside && !hit(nb) && !hit(sb)) {
+        setLabelSide(name, sub, side);
+        name.style.display = ''; sub.style.display = '';
+        placed.push(nb, sb);
+        done = true;
+        break;
+      }
+    }
+    if (!done) { name.style.display = 'none'; sub.style.display = 'none'; }
+  });
+
+  /* ring labels yield to stop labels */
+  ringEls.forEach(r => {
+    if (!r.on) return;
+    const lx = C - view.cx * s + 4;
+    const ly = C + (-ringRadius(r) - view.cy) * s;
+    const value = MEASURE === 'time' ? timeRings[r.index] : r.rk;
+    const full = MEASURE === 'time' ? fkm(value) + ' min' : (UNIT === 'km'
+      ? fkm(value) + ' km · ' + fmi(value) + ' mi'
+      : fmi(value) + ' mi · ' + fkm(value) + ' km');
+    r.label.textContent = full;
+    r.label.style.display = '';
+    const b = r.label.getBBox();
+    const box = { x1: lx + b.x - 4, y1: ly + b.y - 4,
+      x2: lx + b.x + b.width + 4, y2: ly + b.y + b.height + 4 };
+    const on = ringRadius(r) * s >= 48 && !hit(box);
+    r.label.style.display = on ? '' : 'none';
+    if (on) placed.push(box);
+  });
+  if (ghost.classList.contains('on')) {
+    ghostLab.style.display = '';
+    const b = ghostLab.getBBox(), r = +ghostC.getAttribute('r');
+    const gx = C - view.cx * s, gy = C + (r - view.cy) * s + 24;
+    const box = {x1: gx + b.x - 4, y1: gy + b.y - 4,
+      x2: gx + b.x + b.width + 4, y2: gy + b.y + b.height + 4};
+    if (hit(box)) ghostLab.style.display = 'none';
+  }
+}
+
+/* ---------- apply the current view to the world ---------- */
+function applyView() {
+  const s = scale();
+  clampCenter();
+  updateGeometry();
+  world.setAttribute('transform', 'translate(' + (C - view.cx * s) + ' ' + (C - view.cy * s) + ') scale(' + s + ')');
+  hmFixed.setAttribute('transform', 'translate(' + (-view.cx * s) + ' ' + (-view.cy * s) + ')');
+
+  /* counter-scaled groups keep a constant on-screen size */
+  svg.querySelectorAll('.hm-fix').forEach(function (g) {
+    if (g.id === 'hm-ghost-fix') return;
+    g.setAttribute('transform', 'scale(' + (1 / s) + ')');
+  });
+
+  /* rings: show the doubling ladder up to the current scope */
+  let outer = 0;
+  for (const r of ringEls) {
+    r.on = ringRadius(r) <= view.km * 1.02 && ringRadius(r) * s >= 24;
+    if (r.on) outer = Math.max(outer, ringRadius(r));
+  }
+  ringEls.forEach(function (r) {
+    const is8 = r.on && ringRadius(r) === outer;
+    r.circle.style.display = r.on ? '' : 'none';
+    r.circle.classList.toggle('hm-ring8', is8);
+    r.circle.setAttribute('r', ringRadius(r));
+    r.wrapEl.setAttribute('transform', 'translate(0 ' + (-ringRadius(r)) + ')');
+    r.circle.setAttribute('stroke-width', (is8 ? 2.2 : 1.8) / s);
+    r.wrapEl.style.display = r.on ? '' : 'none';
+    r.tick.setAttribute('x1', ringRadius(r) * s);
+    r.tick.setAttribute('x2', ringRadius(r) * s);
+  });
+
+  /* stroke weights + dash patterns stay legible at every zoom */
+  svg.querySelectorAll('.hm-eq').forEach(el => el.setAttribute('stroke-width', 1.6 / s));
+  svg.querySelectorAll('.hm-pathw').forEach(el => {
+    el.setAttribute('stroke-width', 3.2 / s);
+    el.setAttribute('stroke-dasharray', (0.1 / s) + ' ' + (8 / s));
+  });
+  svg.querySelectorAll('.hm-roadcase').forEach(el => el.setAttribute('stroke-width', 7 / s));
+  svg.querySelectorAll('.hm-roadline').forEach(el => {
+    el.setAttribute('stroke-width', 2.6 / s);
+    el.setAttribute('stroke-dasharray', (13 / s) + ' ' + (8 / s));
+  });
+  svg.querySelectorAll('.hm-transitcase').forEach(el => el.setAttribute('stroke-width', 8 / s));
+  svg.querySelectorAll('.hm-transitline').forEach(el => {
+    el.setAttribute('stroke-width', 2.6 / s);
+    el.setAttribute('stroke-dasharray', (3 / s) + ' ' + (11 / s));
+  });
+  ghostC.setAttribute('stroke-width', 2.6 / s);
+  ghostC.setAttribute('stroke-dasharray', (5 / s) + ' ' + (9 / s));
+
+  /* ambient dash-flow keeps a constant screen pace */
+  svg.querySelectorAll('.hm-flow').forEach(el => el.style.animationDuration = clamp(1.6 / s, .05, 5) + 's');
+  svg.querySelectorAll('.hm-step').forEach(el => el.style.animationDuration = clamp(1.5 / s, .05, 5) + 's');
+
+  declutter();
+
+  /* scope badge */
+  scopeEl.textContent = 'scope ' + (MEASURE === 'time' ? fkm(view.km) + ' min' : (UNIT === 'km' ? fkm(view.km) + ' km' : fmi(view.km) + ' mi'));
+
+  /* keep ghost + tooltip glued to their stops */
+  if (ghost.classList.contains('on')) {
+    const r = +ghostC.getAttribute('r');
+    ghostFix.setAttribute('transform', 'translate(0 ' + (r + 24 / s) + ') scale(' + (1 / s) + ')');
+  }
+  if (tip.classList.contains('show') && (pinnedKey || hoverKey)) {
+    const dot = svg.querySelector('.hm-ptg[data-g="' + (pinnedKey || hoverKey) + '"] .hm-core');
+    if (dot) placeTip(tip, wrap, dot);
+  }
+}
+
+/* ---------- emphasis / filter ---------- */
+function applyEmphasis() {
+  svg.querySelectorAll('.hm-ptg, .hm-pathg').forEach(function (g) {
+    const filtered = filterCat !== 'all' && g.dataset.cat !== filterCat;
+    g.classList.toggle('hm-hid', filtered);
+    if (g.classList.contains('hm-ptg')) g.setAttribute('tabindex', filtered ? '-1' : '0');
+    g.classList.toggle('hm-off', !filtered && !!cityEmph && g.dataset.city !== cityEmph);
+  });
+}
+
+function fitSelection(animate) {
+  const sel = stopsOf(filterCat);
+  const maxKm = sel.reduce((m, st) => Math.max(m, targetRadius(st)), 0);
+  tweenView(fitScope(maxKm), 0, 0, animate && !reduceMotion ? 700 : 0);
+}
+
+function setFilter(cat) {
+  filterCat = cat;
+  document.querySelectorAll('.hm-chip').forEach(function (chip) {
+    chip.setAttribute('aria-pressed', String(chip.dataset.cat === cat));
+    chip.setAttribute('aria-checked', String(chip.dataset.cat === cat));
+  });
+  const selected = document.querySelector('.hm-chip[data-cat="' + cat + '"]');
+  document.getElementById('hm-category-label').textContent = cat === 'all' ? 'All stops' : catOf(cat).label;
+  document.querySelector('.hm-picker-icon').innerHTML = selected.querySelector('.hm-option-icon').innerHTML;
+  document.getElementById('hm-category').setAttribute('aria-label', 'Category: ' + (cat === 'all' ? 'All stops' : catOf(cat).label));
+  if (pinnedKey) {
+    const st = stopById(pinnedKey);
+    if (st && filterCat !== 'all' && st.category !== filterCat) unpin();
+  }
+  applyEmphasis();
+  fitSelection(true);
+  renderMetrics();
+}
+
+/* ---------- tooltip ---------- */
+function placeTip(tipEl, wrapEl, dot) {
+  const wr = wrapEl.getBoundingClientRect(), dr = dot.getBoundingClientRect();
+  const px = dr.left + dr.width / 2 - wr.left, py = dr.top + dr.height / 2 - wr.top;
+  tipEl.style.setProperty('--tc', tipEl.dataset.accent);
+  let left = px - 284; if (left < 4) left = px + 22;
+  left = clamp(left, 4, Math.max(4, wr.width - tipEl.offsetWidth - 4));
+  let top = py - tipEl.offsetHeight - 24; if (top < 4) top = py + 24;
+  tipEl.style.left = left + 'px'; tipEl.style.top = top + 'px';
+}
+function tipHtml(st) {
+  const city = D.cities[st.city];
+  return '<div class="hm-tip-head"><span style="width:9px;height:9px;border-radius:50%;background:' + city.accent + ';display:inline-block"></span>'
+    + esc(dispName(st)) + '<span class="hm-tip-cat">' + esc(st.catLabel) + '</span></div>'
+    + '<div class="hm-tip-rows">'
+    + (MEASURE === 'distance' ? '<div class="hm-tip-row">Distance<b>' + st.distStr[UNIT] + '</b></div>'
+    + '<div class="hm-tip-row">Route<b>' + st.routeStr[UNIT] + '</b></div>' : '')
+    + '<div class="hm-tip-row">' + modeLabel(st) + '<b>' + esc(st.timeNote) + '</b></div>'
+    + '<div class="hm-tip-row">Bearing<b>' + esc(st.bearingText) + '</b></div>'
+    + (st.status === 'closed' ? '<div class="hm-tip-row">Status<b>now closed</b></div>' : '')
+    + '</div>'
+    + '<div class="hm-tip-estimate">' + esc(st.timeDetail) + '</div>'
+    + (MEASURE === 'distance' ? '<div class="hm-tip-note">' + esc(st.note) + '</div>' : '');
+}
+
+function activateStop(key) {
+  const st = stopById(key);
+  const city = D.cities[st.city];
+  svg.classList.add('hm-dim');
+  svg.querySelectorAll('.hm-ptg, .hm-pathg').forEach(function (g) { g.classList.toggle('on', g.dataset.g === key); });
+
+  ghostC.setAttribute('r', radius(st));
+  ghostC.setAttribute('stroke', city.accent);
+  ghostLab.setAttribute('fill', city.accent);
+  ghostLab.textContent = shortMeasure(st);
+  ghost.classList.add('on');
+  tip.dataset.accent = city.accent;
+  tip.innerHTML = tipHtml(st);
+  tip.classList.add('show');
+  applyView();
+  const dot = svg.querySelector('.hm-ptg[data-g="' + key + '"] .hm-core');
+  placeTip(tip, wrap, dot);
+}
+function deactivateStop() {
+  svg.classList.remove('hm-dim');
+  svg.querySelectorAll('.on').forEach(function (g) { g.classList.remove('on'); });
+  ghost.classList.remove('on');
+  tip.classList.remove('show');
+}
+
+/* ---------- pinning ---------- */
+function pinStop(key) {
+  pinnedKey = key;
+  document.querySelectorAll('.hm-ptg.pinned').forEach(function (g) { g.classList.remove('pinned'); });
+  svg.querySelector('.hm-ptg[data-g="' + key + '"]').classList.add('pinned');
+  activateStop(key);
+}
+function unpin() {
+  pinnedKey = null;
+  document.querySelectorAll('.hm-ptg.pinned').forEach(function (g) { g.classList.remove('pinned'); });
+  deactivateStop();
+}
+
+/* ---------- metrics (bottom cards, recomputed per selection) ---------- */
+function animNum(el, to, dec, prefix) {
+  if (!el) return;
+  cancelAnimationFrame(el.hmNumberFrame);
+  const from = parseFloat(el.dataset.cur || '0');
+  el.dataset.cur = String(to);
+  if (reduceMotion || SKIP_INTRO) { el.textContent = prefix + to.toFixed(dec); return; }
+  const t0 = performance.now(), dur = 700;
+  const tick = function (now) {
+    const t = Math.min(1, (now - t0) / dur);
+    const e = 1 - Math.pow(1 - t, 3);
+    el.textContent = prefix + (from + (to - from) * e).toFixed(dec);
+    if (t < 1) el.hmNumberFrame = requestAnimationFrame(tick);
+  };
+  el.hmNumberFrame = requestAnimationFrame(tick);
+}
+
+function renderMetrics() {
+  const m = metricOf(filterCat);
+  const sel = stopsOf(filterCat);
+  if (!sel.length) return;
+  const T = sel.filter(st => st.city === 'toronto');
+  const R = sel.filter(st => st.city === 'raleigh');
+  const avg = a => (a.length ? a.reduce((x, st) => x + targetRadius(st), 0) / a.length : 0);
+  const avgMin = a => (a.length ? a.reduce((x, st) => x + st.minutes, 0) / a.length : 0);
+
+  const num1 = document.getElementById('hm-m1-num'), unit1 = document.getElementById('hm-m1-unit');
+  const lab1 = document.getElementById('hm-m1-lab'), p1 = document.getElementById('hm-m1-p');
+  const num2 = document.getElementById('hm-m2-num'), unit2 = document.getElementById('hm-m2-unit');
+  const p2 = document.getElementById('hm-m2-p');
+  const num3a = document.getElementById('hm-m3a'), num3b = document.getElementById('hm-m3b');
+  const arrow3 = document.getElementById('hm-m3-arrow'), p3 = document.getElementById('hm-m3-p');
+
+  /* card 1 — the gap */
+  lab1.textContent = m.title + (MEASURE === 'time' ? ' · time' : '');
+  if (T.length && R.length) {
+    const ratio = avg(R) / avg(T);
+    animNum(num1, +ratio.toFixed(1), 1, '×');
+    unit1.style.display = 'none';
+    p1.innerHTML = 'Toronto averages <b>' + (MEASURE === 'time' ? '≈' + Math.round(avg(T)) + ' min' : udist(avg(T)))
+      + '</b>; Raleigh, <b>' + (MEASURE === 'time' ? '≈' + Math.round(avg(R)) + ' min' : udist(avg(R))) + '</b>.';
+  } else {
+    const solo = T.length ? T : R;
+    const names = solo.map(st => dispName(st)).join(' & ');
+    const km = avg(solo);
+    animNum(num1, +(MEASURE === 'time' ? km : (UNIT === 'km' ? km : km / KM_MI)).toFixed(MEASURE === 'time' ? 0 : 1), MEASURE === 'time' ? 0 : 1, '');
+    unit1.textContent = MEASURE === 'time' ? 'min' : UNIT;
+    unit1.style.display = '';
+    p1.innerHTML = '<b>' + esc(names) + '</b> · ' + esc(D.cities[solo[0].city].name) + ' only.';
+  }
+
+  /* card 2 — the widest ring */
+  const wide = sel.reduce((a, st) => (targetRadius(st) > targetRadius(a) ? st : a), sel[0]);
+  animNum(num2, +(MEASURE === 'time' ? wide.minutes : (UNIT === 'km' ? wide.km : wide.km / KM_MI)).toFixed(MEASURE === 'time' ? 0 : 1), MEASURE === 'time' ? 0 : 1, '');
+  unit2.textContent = MEASURE === 'time' ? 'min' : UNIT;
+  p2.innerHTML = '<b>' + esc(dispName(wide)) + '</b> · ' + esc(D.cities[wide.city].name) + '.';
+
+  /* card 3 — minutes */
+  if (T.length && R.length) {
+    const t = Math.round(avgMin(T)), r = Math.round(avgMin(R));
+    animNum(num3a, t, 0, '');
+    animNum(num3b, r, 0, '');
+    arrow3.style.display = '';
+    p3.innerHTML = 'Toronto → Raleigh · ' + modesOf(T) + ' vs driving.';
+  } else {
+    const solo = T.length ? T : R;
+    const mode = modesOf(solo);
+    const t = Math.round(avgMin(solo));
+    animNum(num3a, t, 0, '');
+    arrow3.style.display = 'none';
+    num3b.textContent = '';
+    p3.innerHTML = esc(D.cities[solo[0].city].name) + ' · ' + mode + ', each way.';
+  }
+}
+
+/* ---------- unit toggle ---------- */
+function setUnit(next) {
+  if (next === UNIT || MEASURE === 'time') return;
+  UNIT = next;
+  document.getElementById('hm-btn-km').setAttribute('aria-pressed', String(next === 'km'));
+  document.getElementById('hm-btn-mi').setAttribute('aria-pressed', String(next === 'mi'));
+  refreshMeasureText();
+  renderMetrics();
+  applyView();
+  if (pinnedKey || hoverKey) activateStop(pinnedKey || hoverKey);
+}
+
+/* ---------- intro ---------- */
+function playIntro() {
+  const app = document.getElementById('hm-app');
+  if (SKIP_INTRO || reduceMotion) {
+    renderMetrics();
+    svg.classList.add('hm-live');
+    return;
+  }
+  app.classList.add('hm-pre');
+  svg.classList.add('hm-pre');
+  void app.offsetWidth;
+  requestAnimationFrame(function () {
+    app.classList.remove('hm-pre');
+    svg.classList.remove('hm-pre');
+    renderMetrics();
+    setTimeout(function () { svg.classList.add('hm-live'); }, 2600);
+  });
+}
+
+/* ---------- events: stops ---------- */
+let panMoved = 0;
+D.stops.forEach(function (st) {
+  const g = svg.querySelector('.hm-ptg[data-g="' + st.key + '"]');
+  g.addEventListener('mouseenter', function () { hoverKey = st.key; if (!pinnedKey) activateStop(st.key); });
+  g.addEventListener('mouseleave', function () { hoverKey = null; if (!pinnedKey) deactivateStop(); });
+  g.addEventListener('focus', function () { hoverKey = st.key; activateStop(st.key); });
+  g.addEventListener('blur', function () { hoverKey = null; if (pinnedKey !== st.key) deactivateStop(); });
+  g.addEventListener('click', function () {
+    const dragged = panMoved > 6;   /* it was a drag, not a click */
+    panMoved = 0;
+    if (dragged) return;
+    pinnedKey === st.key ? unpin() : pinStop(st.key);
+  });
+  g.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      panMoved = 0;
+      pinnedKey === st.key ? unpin() : pinStop(st.key);
+    }
+  });
+});
+svg.addEventListener('mouseleave', function () { hoverKey = null; if (!pinnedKey) deactivateStop(); });
+document.addEventListener('pointerdown', function (e) {
+  const t = e.target;
+  if (t && t.closest && !t.closest('.hm-ptg') && !t.closest('.hm-picker') && !t.closest('.hm-zoom') && !t.closest('.hm-seg')) unpin();
+});
+document.addEventListener('keydown', function (e) { if (e.key === 'Escape') unpin(); });
+
+/* ---------- events: chips, units, cards ---------- */
+const categoryTrigger = document.getElementById('hm-category');
+const categoryMenu = document.getElementById('hm-category-menu');
+const picker = document.querySelector('.hm-picker');
+function closeCategory(returnFocus) {
+  categoryMenu.hidden = true;
+  categoryTrigger.setAttribute('aria-expanded', 'false');
+  if (returnFocus) categoryTrigger.focus({preventScroll:true});
+}
+function openCategory(edge) {
+  categoryMenu.hidden = false;
+  categoryTrigger.setAttribute('aria-expanded', 'true');
+  const items = [...categoryMenu.querySelectorAll('.hm-chip')];
+  const selected = categoryMenu.querySelector('[aria-checked="true"]');
+  (edge === 'first' ? items[0] : edge === 'last' ? items[items.length - 1] : selected).focus({preventScroll:true});
+}
+categoryTrigger.addEventListener('click', () => categoryMenu.hidden ? openCategory() : closeCategory(false));
+categoryTrigger.addEventListener('keydown', e => {
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+    e.preventDefault(); e.stopPropagation();
+    openCategory(e.key === 'ArrowDown' ? 'first' : 'last');
+  }
+});
+// Menu buttons retain native Enter/Space activation; arrow keys move focus only.
+picker.addEventListener('keydown', e => {
+  if (categoryMenu.hidden) return;
+  if (e.key === 'Escape') {
+    e.preventDefault(); e.stopPropagation(); closeCategory(true); return;
+  }
+  const items = [...categoryMenu.querySelectorAll('.hm-chip')];
+  const index = items.indexOf(document.activeElement);
+  let target;
+  if (e.key === 'ArrowDown') target = items[(index + 1) % items.length];
+  if (e.key === 'ArrowUp') target = items[(index + items.length - 1) % items.length];
+  if (e.key === 'Home') target = items[0];
+  if (e.key === 'End') target = items[items.length - 1];
+  if (e.key.length === 1 && /[a-z]/i.test(e.key) && !e.ctrlKey && !e.metaKey && !e.altKey) {
+    target = items.find(item => item.textContent.trim().replace(/^◈/, '').toLowerCase().startsWith(e.key.toLowerCase()));
+  }
+  if (target) { e.preventDefault(); target.focus({preventScroll:true}); }
+});
+document.addEventListener('pointerdown', e => { if (!picker.contains(e.target)) closeCategory(false); });
+picker.addEventListener('focusout', e => { if (!picker.contains(e.relatedTarget)) closeCategory(false); });
+document.querySelectorAll('.hm-chip').forEach(function (chip) {
+  chip.addEventListener('click', function () { setFilter(chip.dataset.cat); closeCategory(true); });
+});
+document.getElementById('hm-btn-distance').addEventListener('click', function () { setMeasure('distance'); });
+document.getElementById('hm-btn-time').addEventListener('click', function () { setMeasure('time'); });
+document.getElementById('hm-btn-km').addEventListener('click', function () { setUnit('km'); });
+document.getElementById('hm-btn-mi').addEventListener('click', function () { setUnit('mi'); });
+
+Object.keys(D.cities).forEach(function (cityKey) {
+  const card = document.getElementById('hm-card-' + cityKey);
+  if (!card) return;
+  const on = function () { cityEmph = cityKey; applyEmphasis(); };
+  const off = function () { cityEmph = null; applyEmphasis(); };
+  card.addEventListener('mouseenter', on); card.addEventListener('mouseleave', off);
+  card.addEventListener('focus', on); card.addEventListener('blur', off);
+});
+
+/* ---------- events: zoom + pan ---------- */
+document.getElementById('hm-zin').addEventListener('click', function () {
+  tweenView(view.km * 0.72, view.cx, view.cy, 220);
+});
+document.getElementById('hm-zout').addEventListener('click', function () {
+  tweenView(view.km * 1.39, view.cx, view.cy, 220);
+});
+document.getElementById('hm-zfit').addEventListener('click', function () { fitSelection(true); });
+
+svg.addEventListener('wheel', function (e) {
+  e.preventDefault();
+  cancelAnimationFrame(tweenReq);
+  measureMix = MEASURE === 'time' ? 1 : 0;
+  const f = Math.exp(clamp(e.deltaY, -60, 60) * 0.0016);
+  zoomTo(clamp(view.km * f, minScope(), maxScope()), clientToVb(e.clientX, e.clientY));
+  applyView();
+}, { passive: false });
+
+const pointers = new Map();
+let pinchPrev = null;
+
+svg.addEventListener('pointerdown', function (e) {
+  if (e.pointerType === 'mouse' && e.button !== 0) return;
+  svg.setPointerCapture(e.pointerId);
+  pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  panMoved = 0;
+  pinchPrev = null;
+  cancelAnimationFrame(tweenReq);
+  measureMix = MEASURE === 'time' ? 1 : 0;
+  applyView();
+  svg.classList.add('hm-panning');
+});
+
+svg.addEventListener('pointermove', function (e) {
+  if (!pointers.has(e.pointerId)) return;
+  const r = svg.getBoundingClientRect();
+  const k = VB / r.width;
+  if (pointers.size === 1) {
+    const prev = pointers.get(e.pointerId);
+    const dx = (e.clientX - prev.x) * k, dy = (e.clientY - prev.y) * k;
+    panMoved += Math.abs(dx) + Math.abs(dy);
+    const s = scale();
+    view.cx -= dx / s;
+    view.cy -= dy / s;
+    applyView();
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  } else if (pointers.size === 2) {
+    const old = pinchPrev;
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    const p = [...pointers.values()];
+    const newD = Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y) * k;
+    const newMid = { x: (p[0].x + p[1].x) / 2, y: (p[0].y + p[1].y) / 2 };
+    if (old) {
+      const oldMidVb = clientToVb(old.mid.x, old.mid.y);
+      zoomTo(clamp(view.km * old.d / Math.max(newD, 1), minScope(), maxScope()), oldMidVb);
+      const s = scale();
+      view.cx -= (newMid.x - old.mid.x) * k / s;
+      view.cy -= (newMid.y - old.mid.y) * k / s;
+      panMoved += 8;
+      applyView();
+    }
+    pinchPrev = { d: newD, mid: newMid };
+  }
+});
+
+const endPointer = function (e) {
+  pointers.delete(e.pointerId);
+  pinchPrev = null;
+  if (!pointers.size) svg.classList.remove('hm-panning');
+};
+svg.addEventListener('pointerup', endPointer);
+svg.addEventListener('pointercancel', endPointer);
+svg.addEventListener('lostpointercapture', endPointer);
+
+/* ---------- boot ---------- */
+view.km = fitScope(D.stops.reduce((mx, st) => Math.max(mx, targetRadius(st)), 0));
+applyEmphasis();
+applyView();
+playIntro();
+// Font loading can change label bounds after the first frame.
+if (document.fonts) document.fonts.ready.then(applyView);
+
+/* test/debug hook (used by tools/diag.html) */
+window.HM = {
+  get view() { return { km: view.km, cx: view.cx, cy: view.cy }; },
+  filter: function () { return filterCat; },
+  get measure() { return MEASURE; },
+  get measureMix() { return measureMix; },
+};
+})();
+
+</script>
+</body>
+</html>

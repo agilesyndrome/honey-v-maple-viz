@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html><body style="margin:0;background:#0a0d13">
+<iframe id="f" style="width:100%;height:2400px;border:0"></iframe>
+<div id="out" style="font:12px monospace;color:#fff;white-space:pre"></div>
+<script>
+// Headless test harness: ?src=<path-or-url> [&w=1440]
+// Asserts: boot, chips/rescope/visibility, zoom controls + wheel, pinning,
+// tooltips, ghost rings, unit toggle, live metrics, label-collision sweep
+// (run at several scopes), removed-section sweep, and an address-leak sweep.
+const params = new URLSearchParams(location.search);
+document.getElementById('f').src = (params.get('src') || '../index.html?reveal=now');
+const results = [];
+const check = (name, fn) => {
+  try { const v = fn(); if (v !== true) throw new Error(String(v)); results.push([true, name, v]); }
+  catch (e) { results.push([false, name, e.message]); }
+};
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+(async () => {
+  await sleep(2500);
+  const d = document.getElementById('f').contentDocument;
+  const w = document.getElementById('f').contentWindow;
+  const $ = s => d.querySelector(s), $$ = s => [...d.querySelectorAll(s)];
+  const R = el => { const r = el.getBoundingClientRect(); return {x:r.x,y:r.y,w:r.width,h:r.height}; };
+  const inter = (a,b) => {
+    const x = Math.max(0, Math.min(a.x+a.w, b.x+b.w) - Math.max(a.x, b.x));
+    const y = Math.max(0, Math.min(a.y+a.h, b.y+b.h) - Math.max(a.y, b.y));
+    return +(x*y).toFixed(1);
+  };
+  const liveTexts = () => $$('#hm-svg text').filter(t => {
+    const cs = getComputedStyle(t);
+    return t.getClientRects().length > 0 && t.textContent.trim() && cs.display !== 'none' && cs.visibility !== 'hidden' && cs.opacity !== '0';
+  });
+  const collisionCheck = () => {
+    const boxes = liveTexts().map(t => ({n: t.textContent.trim().slice(0, 16), r: R(t)}));
+    const overlaps = [];
+    for (let i = 0; i < boxes.length; i++) for (let j = i+1; j < boxes.length; j++) {
+      const a = inter(boxes[i].r, boxes[j].r);
+      if (a > 4) overlaps.push(boxes[i].n + ' ✕ ' + boxes[j].n + ' → ' + a + 'px²');
+    }
+    const chartBox = R(d.getElementById('hm-chart'));
+    const outside = boxes
+      .filter(b => b.r.x < chartBox.x - 2 || b.r.x + b.r.w > chartBox.x + chartBox.w + 2)
+      .map(b => b.n + '@' + b.r.x.toFixed(0));
+    return { overlaps, outside };
+  };
+  const click = el => el.dispatchEvent(new w.MouseEvent('click', {bubbles:true}));
+  const hoverIn = el => el.dispatchEvent(new w.MouseEvent('mouseenter'));
+  const hoverOut = el => el.dispatchEvent(new w.MouseEvent('mouseleave'));
+
+  /* ---- boot ---- */
+  check('svg exists', () => !!d.getElementById('hm-svg'));
+  check('data script exists', () => !!d.getElementById('hm-data'));
+  check('11 stop groups', () => $$('.hm-ptg').length === 11 || 'got ' + $$('.hm-ptg').length);
+  check('11 path groups', () => $$('.hm-pathg').length === 11);
+  check('ring ladder present (7)', () => $$('.hm-ring').length === 7);
+  check('ghost ring present', () => !!d.getElementById('hm-ghost'));
+  check('tip element present', () => !!d.getElementById('hm-tip'));
+  check('chips present (all+4)', () => $$('.hm-chip').length === 5 || 'got ' + $$('.hm-chip').length);
+  check('category menu initially closed', () => $('#hm-category-menu').hidden);
+  click($('#hm-category'));
+  check('category menu opens', () => !$('#hm-category-menu').hidden && $('#hm-category').getAttribute('aria-expanded') === 'true');
+  $('#hm-category-menu').dispatchEvent(new w.KeyboardEvent('keydown', {key:'Escape', bubbles:true}));
+  check('Escape closes category menu and restores focus', () => $('#hm-category-menu').hidden && d.activeElement === $('#hm-category'));
+  check('removed: week/ledger/footer/replay', () =>
+    !$('.hm-week') && !$('.hm-ledger') && !$('.hm-foot') && !d.getElementById('hm-replay'));
+  check('removed: footer prose gone', () =>
+    !/An illustrative week|errand ledger|Measures|Privacy|Embed/i.test(d.body.textContent));
+  check('default scope 20 km', () => w.HM.view.km === 20 || 'got ' + w.HM.view.km);
+  check('scope badge reads "scope 20 km"', () => $('#hm-scope').textContent === 'scope 20 km');
+  check('metrics: everyday gap ×4.0', () => $('#hm-m1-num').textContent === '×4.0' || 'got ' + $('#hm-m1-num').textContent);
+  check('metrics: widest ring 16.6 km', () => $('#hm-m2-num').textContent === '16.6' || 'got ' + $('#hm-m2-num').textContent);
+  check('metrics: minutes 22 → 13', () =>
+    $('#hm-m3a').textContent === '22' && $('#hm-m3b').textContent === '13');
+  let c = collisionCheck();
+  check('no label overlaps (all)', () => c.overlaps.length === 0 || c.overlaps.join(' | '));
+  check('labels inside chart (all)', () => c.outside.length === 0 || c.outside.join(','));
+
+  /* ---- coffee rescope ---- */
+  click($('.hm-chip[data-cat="coffee"]'));
+  await sleep(1100);
+  check('coffee chip pressed', () => $('.hm-chip[data-cat="coffee"]').getAttribute('aria-pressed') === 'true');
+  check('coffee rescopes to 12 km', () => w.HM.view.km === 12 || 'got ' + w.HM.view.km);
+  check('coffee: misc visible', () => !$('.hm-ptg[data-g="misc"]').classList.contains('hm-hid'));
+  check('coffee: sola visible', () => !$('.hm-ptg[data-g="sola"]').classList.contains('hm-hid'));
+  check('coffee: walmart disappears', () => $('.hm-ptg[data-g="walmart"]').classList.contains('hm-hid'));
+  check('coffee: harbourfront disappears', () => $('.hm-ptg[data-g="harbourfront"]').classList.contains('hm-hid'));
+  check('coffee: 4 stops visible', () => $$('.hm-ptg:not(.hm-hid)').length === 4);
+  check('coffee: paths hidden too', () => $$('.hm-pathg:not(.hm-hid)').length === 4);
+  check('metrics: coffee gap ×11.6', () => $('#hm-m1-num').textContent === '×11.6' || 'got ' + $('#hm-m1-num').textContent);
+  check('metrics: widest coffee 10.2 km', () => $('#hm-m2-num').textContent === '10.2' || 'got ' + $('#hm-m2-num').textContent);
+  check('metrics: coffee minutes 10 → 14', () =>
+    $('#hm-m3a').textContent === '10' && $('#hm-m3b').textContent === '14');
+  c = collisionCheck();
+  check('no label overlaps (coffee)', () => c.overlaps.length === 0 || c.overlaps.join(' | '));
+  check('labels inside chart (coffee)', () => c.outside.length === 0 || c.outside.join(','));
+
+  /* ---- essentials rescope ---- */
+  click($('.hm-chip[data-cat="essentials"]'));
+  await sleep(1100);
+  check('essentials rescopes to 6 km', () => w.HM.view.km === 6 || 'got ' + w.HM.view.km);
+  check('essentials: 4 stops visible', () => $$('.hm-ptg:not(.hm-hid)').length === 4);
+  check('essentials: food lion visible', () => !$('.hm-ptg[data-g="foodlion"]').classList.contains('hm-hid'));
+  check('essentials: jubala disappears', () => $('.hm-ptg[data-g="jubala"]').classList.contains('hm-hid'));
+  check('metrics: essentials gap ×1.3', () => $('#hm-m1-num').textContent === '×1.3' || 'got ' + $('#hm-m1-num').textContent);
+  c = collisionCheck();
+  check('no label overlaps (essentials)', () => c.overlaps.length === 0 || c.overlaps.join(' | '));
+  check('labels inside chart (essentials)', () => c.outside.length === 0 || c.outside.join(','));
+
+  /* ---- work (one-city ring) ---- */
+  click($('.hm-chip[data-cat="work"]'));
+  await sleep(1100);
+  check('work rescopes to 5 km', () => w.HM.view.km === 5 || 'got ' + w.HM.view.km);
+  check('metrics: solo ring 3.6 km', () =>
+    $('#hm-m1-num').textContent === '3.6' && $('#hm-m1-unit').textContent === 'km');
+  check('metrics: solo minutes 35, arrow hidden', () =>
+    $('#hm-m3a').textContent === '35' && $('#hm-m3-arrow').style.display === 'none');
+  c = collisionCheck();
+  check('no label overlaps (work)', () => c.overlaps.length === 0 || c.overlaps.join(' | '));
+
+  /* ---- date night ---- */
+  click($('.hm-chip[data-cat="date-night"]'));
+  await sleep(1300);
+  check('date-night rescopes to 20 km', () => w.HM.view.km === 20 || 'got ' + w.HM.view.km);
+  check('date-night: mandolin visible', () => !$('.hm-ptg[data-g="mandolin"]').classList.contains('hm-hid'));
+  check('date-night: and/ore visible', () => !$('.hm-ptg[data-g="andore"]').classList.contains('hm-hid'));
+  check('metrics: date-night gap ×18.8', () => $('#hm-m1-num').textContent === '×18.8' || 'got ' + $('#hm-m1-num').textContent);
+  c = collisionCheck();
+  check('no label overlaps (date-night)', () => c.overlaps.length === 0 || c.overlaps.join(' | '));
+  check('labels inside chart (date-night)', () => c.outside.length === 0 || c.outside.join(','));
+
+  /* ---- back to all ---- */
+  click($('.hm-chip[data-cat="all"]'));
+  await sleep(1100);
+  check('all restores visibility', () => $$('.hm-hid').length === 0);
+  check('all rescopes back to 20 km', () => w.HM.view.km === 20);
+
+  /* ---- hover tooltip + ghost ring ---- */
+  const hf = $('.hm-ptg[data-g="harbourfront"]');
+  hoverIn(hf);
+  check('hover shows tip', () => d.getElementById('hm-tip').classList.contains('show'));
+  check('tip names Harbourfront', () => d.getElementById('hm-tip').textContent.includes('Harbourfront Centre'));
+  check('tip shows Work & Volunteering', () => d.getElementById('hm-tip').textContent.includes('Work & Volunteering'));
+  check('tip shows ESE bearing', () => d.getElementById('hm-tip').textContent.includes('east-south-east of home'));
+  check('ghost ring at 3.613 km (km-space)', () =>
+    Math.abs(+d.getElementById('hm-ghost-c').getAttribute('r') - 3.613) < 0.01);
+  check('ghost label 3.6 km', () => d.getElementById('hm-ghost-lab').textContent === '3.6 km');
+  hoverOut(hf);
+  check('leave hides tip', () => !d.getElementById('hm-tip').classList.contains('show'));
+
+  /* ---- click pin ---- */
+  const wal = $('.hm-ptg[data-g="walmart"]');
+  hoverIn(wal);
+  click(wal);
+  hoverOut(wal);
+  check('click pins stop', () => wal.classList.contains('pinned'));
+  check('pin keeps tip after leave', () => d.getElementById('hm-tip').classList.contains('show'));
+  check('pin keeps ghost ring', () => d.getElementById('hm-ghost').classList.contains('on'));
+  d.body.dispatchEvent(new w.MouseEvent('pointerdown', {bubbles:true}));
+  check('outside click unpins', () => !wal.classList.contains('pinned') && !d.getElementById('hm-tip').classList.contains('show'));
+  click(wal);
+  d.dispatchEvent(new w.KeyboardEvent('keydown', {key:'Escape', bubbles:true}));
+  check('Escape unpins', () => !wal.classList.contains('pinned'));
+
+  /* ---- unit toggle ---- */
+  click(d.getElementById('hm-btn-mi'));
+  check('mi toggle pressed', () => d.getElementById('hm-btn-mi').getAttribute('aria-pressed') === 'true');
+  const ringLab = $$('.hm-ringlab').filter(t => t.style.display !== 'none')[0];
+  check('first visible ring label in mi', () => (ringLab ? ringLab.textContent.trim().startsWith('2.5 mi') : 'none'));
+  check('walmart sub 0.7 mi', () =>
+    $('.hm-ptg[data-g="walmart"] .hm-stopsub').textContent.trim() === '0.7 mi');
+  hoverIn(wal);
+  check('tip route in mi', () => d.getElementById('hm-tip').textContent.includes('0.9 mi'));
+  hoverOut(wal);
+  check('scope badge 12 mi', () => $('#hm-scope').textContent === 'scope 12 mi' || 'got ' + $('#hm-scope').textContent);
+  check('metrics: widest ring 10.3 mi', () => $('#hm-m2-num').textContent === '10.3' || 'got ' + $('#hm-m2-num').textContent);
+  click(d.getElementById('hm-btn-km'));
+
+  /* ---- zoom controls + wheel ---- */
+  click(d.getElementById('hm-zin'));
+  await sleep(500);
+  const z1 = w.HM.view.km;
+  check('zoom in shrinks scope', () => z1 < 20 || 'got ' + z1);
+  click(d.getElementById('hm-zout'));
+  await sleep(500);
+  const z2 = w.HM.view.km;
+  check('zoom out grows scope', () => z2 > z1 || 'got ' + z2);
+  d.getElementById('hm-svg').dispatchEvent(new w.WheelEvent('wheel', {deltaY: -60, clientX: 700, clientY: 500, bubbles: true, cancelable: true}));
+  check('wheel zooms in', () => w.HM.view.km < z2 || 'got ' + w.HM.view.km);
+  click(d.getElementById('hm-zfit'));
+  await sleep(1100);
+  check('rescope button returns to 20 km', () => w.HM.view.km === 20 || 'got ' + w.HM.view.km);
+
+  /* ---- pan (drag) ---- */
+  const svgEl = d.getElementById('hm-svg');
+  svgEl.dispatchEvent(new w.PointerEvent('pointerdown', {pointerId: 1, clientX: 700, clientY: 500, bubbles: true, isPrimary: true}));
+  svgEl.dispatchEvent(new w.PointerEvent('pointermove', {pointerId: 1, clientX: 640, clientY: 500, bubbles: true, isPrimary: true}));
+  svgEl.dispatchEvent(new w.PointerEvent('pointerup', {pointerId: 1, bubbles: true}));
+  check('drag pans the view', () => w.HM.view.cx !== 0 || 'cx stayed ' + w.HM.view.cx);
+  click(d.getElementById('hm-zfit'));
+  await sleep(1100);
+  check('rescope recentres on Home', () => Math.abs(w.HM.view.cx) < 1e-6 && Math.abs(w.HM.view.cy) < 1e-6);
+
+  /* ---- time geometry, not just new labels ---- */
+  click($('#hm-btn-mi'));
+  click(wal);
+  if (!wal.classList.contains('pinned')) click(wal); // Clear the synthetic drag's click suppression.
+  const initialPoint = wal.getAttribute('transform');
+  const initialPath = $('.hm-pathg[data-g="walmart"] path').getAttribute('d');
+  click($('#hm-btn-time'));
+  await sleep(250);
+  check('time morph has intermediate geometry', () => w.HM.measureMix > 0 && w.HM.measureMix < 1);
+  check('stop and path both morph', () => wal.getAttribute('transform') !== initialPoint &&
+    $('.hm-pathg[data-g="walmart"] path').getAttribute('d') !== initialPath);
+  await sleep(1000);
+  check('time mode selected', () => w.HM.measure === 'time' && w.HM.measureMix === 1);
+  check('time units control hidden', () => $('#hm-units').hidden && w.getComputedStyle($('#hm-units')).display === 'none');
+  check('time fits all at 50 min', () => w.HM.view.km === 50 && $('#hm-scope').textContent === 'scope 50 min');
+  check('time stop labels in minutes', () => wal.querySelector('.hm-stopsub').textContent === '≈15 min');
+  check('time metrics recompute ratio and widest', () => $('#hm-m1-num').textContent === '×0.6' && $('#hm-m2-num').textContent === '35' && $('#hm-m2-unit').textContent === 'min');
+  check('time keeps pinned stop', () => wal.classList.contains('pinned') && $('#hm-tip').classList.contains('show'));
+  check('time ghost radius uses minutes', () => +$('#hm-ghost-c').getAttribute('r') === 15 && $('#hm-ghost-lab').textContent === '≈15 min');
+  check('time tip suppresses distances', () => !/\b(?:km|mi|Distance|Route)\b/.test($('#hm-tip').textContent));
+  check('time city cards suppress distances', () => !/\b(?:km|mi)\b/.test($('.hm-cities').textContent));
+  check('transit stored on both farther Toronto stops', () => w.HM_DATA.stops.filter(st => st.travelMode === 'transit').map(st => st.key).join(',') === 'harbourfront,ikea');
+  check('transit has distinct paths', () => $$('.hm-transitcase').length === 2 && $$('.hm-pathw').length === 3);
+  c = collisionCheck();
+  check('no label overlaps (time all)', () => c.overlaps.length === 0 || c.overlaps.join(' | '));
+  check('labels inside chart (time all)', () => c.outside.length === 0 || c.outside.join(','));
+  for (const [cat, scope, widest, ratio] of [['coffee',25,18,'×1.4'],['essentials',50,35,'×0.2'],['work',50,35,'35'],['date-night',30,26,'×2.0']]) {
+    click($('.hm-chip[data-cat="' + cat + '"]'));
+    await sleep(1000);
+    check('time ' + cat + ' scope', () => w.HM.view.km === scope);
+    check('time ' + cat + ' metrics', () => $('#hm-m1-num').textContent === ratio && $('#hm-m2-num').textContent === String(widest));
+    c = collisionCheck();
+    check('no label overlaps (time ' + cat + ')', () => c.overlaps.length === 0 || c.overlaps.join(' | '));
+    check('labels inside chart (time ' + cat + ')', () => c.outside.length === 0 || c.outside.join(','));
+  }
+  click($('#hm-btn-distance'));
+  await sleep(1100);
+  check('distance restores previous miles choice', () => !$('#hm-units').hidden && $('#hm-btn-mi').getAttribute('aria-pressed') === 'true');
+  check('distance retains category', () => w.HM.filter() === 'date-night' && w.HM.view.km === 20);
+  click($('.hm-chip[data-cat="all"]'));
+  await sleep(1000);
+  click($('#hm-btn-km'));
+  check('distance restores original stop geometry', () => wal.getAttribute('transform') === initialPoint);
+  click($('#hm-btn-time'));
+  await sleep(180);
+  click($('#hm-btn-distance'));
+  await sleep(1100);
+  check('rapid toggle settles on requested measurement', () => w.HM.measureMix === 0 && w.HM.view.km === 20);
+
+  /* ---- privacy sweep ---- */
+  check('no addresses in DOM', () => {
+    const txt = d.body.textContent + d.body.innerHTML;
+    return !/Churchill|Dufferin|Dovercourt|Neuse|Village Oaks|Ossington|Queens Quay|Lead Mine|Brooks|Fairview|Oberlin|Yonge|Gerrard|Retail|Queen St|M5B|M6J|27614|27608|27615|27587/i.test(txt) || 'LEAK';
+  });
+  check('city cards list nearest per category', () => {
+    const rows = $$('#hm-card-raleigh .hm-row');
+    return rows[0].querySelector('b').textContent === 'Black & White' &&
+           rows[0].querySelector('i').textContent.includes('+2 more');
+  });
+  check('mandolin row notes closed', () =>
+    $$('#hm-card-raleigh .hm-row')[3].querySelector('i').textContent.includes('now closed'));
+
+  /* ---- report ---- */
+  let ok = true;
+  const fails = [];
+  for (const [pass, name, detail] of results) {
+    console.log((pass ? 'PASS' : 'FAIL') + '  ' + name + (detail !== true && detail !== undefined ? '  [' + detail + ']' : ''));
+    if (!pass) { ok = false; fails.push(name + (detail !== true && detail !== undefined ? ' [' + detail + ']' : '')); }
+  }
+  document.getElementById('out').textContent = (ok ? 'ALL OK' : 'FAILURES: ' + fails.length + '\n' + fails.join('\n'));
+  document.title = ok ? 'PASS' : 'FAIL';
+})();
+</script>
+</body></html>
