@@ -4,7 +4,7 @@ import json
 import math
 import unittest
 
-from build import DATA_FILE, build_hm, hav_km, travel_time
+from build import DATA_FILE, build_hm, hav_km, stop_km, travel_time
 
 
 class TravelTests(unittest.TestCase):
@@ -44,6 +44,10 @@ class TravelTests(unittest.TestCase):
         threshold = self.defaults['initialTorontoWalkingRadiusKm']
         self.assertEqual(threshold, min(visible))
         for stop in self.data['stops']:
+            # This verifies the original defaults, before individually authored exceptions.
+            if stop['key'] not in ('walmart', 'misc', 'andore', 'harbourfront', 'ikea',
+                                   'foodlion', 'jubala', 'sola', 'bw', 'target', 'mandolin'):
+                continue
             expected = 'drive' if stop['city'] == 'raleigh' else ('walk' if hav_km(self.data['cities']['toronto']['home'], stop) <= threshold else 'transit')
             self.assertEqual(stop['travel']['mode'], expected)
 
@@ -56,8 +60,31 @@ class TravelTests(unittest.TestCase):
 
     def test_raleigh_estimates_are_preserved(self):
         stops = build_hm(self.data)['stops']
-        self.assertEqual({s['key']: s['minutes'] for s in stops if s['city'] == 'raleigh'},
+        self.assertEqual({s['key']: s['minutes'] for s in stops if s['key'] in ('foodlion', 'jubala', 'sola', 'bw', 'target', 'mandolin')},
                          {'foodlion': 4, 'jubala': 12, 'sola': 18, 'bw': 11, 'target': 8, 'mandolin': 26})
+
+    def test_supplied_distances_and_walking_exceptions(self):
+        stops = {s['key']: s for s in build_hm(self.data)['stops']}
+        for key, distance, minutes in [('school-raleigh', .7, 10), ('school-toronto', 1.2, 15), ('metro', .7, 7)]:
+            with self.subTest(key=key):
+                self.assertEqual(stops[key]['km'], distance)
+                self.assertEqual(stops[key]['minutes'], minutes)
+                self.assertEqual(stops[key]['travelMode'], 'walk')
+                self.assertIsNone(stops[key]['bearingText'])
+                self.assertIsNone(stops[key]['routeStr'])
+
+    def test_invalid_supplied_distance_is_rejected(self):
+        for value in [0, -1, True, math.nan, math.inf, '0.7']:
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                stop_km({}, {'key':'supplied', 'distanceKm':value})
+
+    def test_museum_modes_and_map_times(self):
+        stops = {s['key']: s for s in build_hm(self.data)['stops']}
+        for key, mode, minutes in [('rom', 'transit', 35), ('science-museum', 'drive', 30)]:
+            self.assertEqual(stops[key]['category'], 'fun-games')
+            self.assertEqual(stops[key]['travelMode'], mode)
+            self.assertEqual(stops[key]['minutes'], minutes)
+            self.assertIn('Google Maps', stops[key]['timeDetail'])
 
     def test_bad_travel_inputs_fail(self):
         for field, value in [('mode', 'fly'), ('speedKph', 0), ('waitMinutes', -1), ('accessKm', math.nan), ('transitMinutes', math.inf)]:

@@ -5,17 +5,16 @@
 
 A single-file, zero-dependency data visualization comparing how far everyday
 life sits from **our front door in Toronto** (where we walk or take transit) versus
-**our front door in Raleigh** (where we drive everywhere).
+**our front door in Raleigh** (mostly driving, with a walk to school).
 
 Both homes are condensed into one dot — **Home** — at the centre of a live,
 zoomable compass:
 
 - **North half — Maple (Toronto):** dotted walking paths and paired transit lines.
-- **South half — Honey (Raleigh):** ruled, highway-style paths.
+- **South half — Honey (Raleigh):** ruled driving paths and a dotted school walk.
 - **Rings double outward** from Home (0.5 · 1 · 2 · 4 · 8 · 16 km), and the
   whole map **rescopes and rezooms** to whatever you're looking at.
-- **Choose a category** — Coffee, Everyday Essentials, Work & Volunteering,
-  Date Night — and every other stop disappears while the map zooms to that
+- **Choose a category** — Coffee, Shopping, Daily Life, Date Night, Fun & Games — and every other stop disappears while the map zooms to that
   errand's true circle.
 - **Scroll to zoom, drag to roam** (pinch on touch), or use the +/−/⤢ controls;
   a scope badge shows the current radius.
@@ -30,14 +29,15 @@ zoomable compass:
 The compact category menu supports arrow keys, Home/End, typeahead, and
 Escape. Controls keep comfortable touch targets on mobile.
 
-The real story (all distances straight-line from the front door):
+The comparison (calculated straight-line radii, plus user-supplied school and Metro distances):
 
-| Category | Toronto (walk/transit) | Raleigh (drive) | Gap |
+| Category | Toronto | Raleigh | Distance gap |
 |---|---|---|---|
-| Coffee | Misc Coffee — 0.7 km · ≈10 min | Black & White 6.7 · Jubala 7.5 · Sola 10.2 km | **×11.6** |
-| Everyday Essentials | Walmart 1.1 km · IKEA 3.3 km | Food Lion 1.1 km · Target 4.5 km | **×1.3** |
-| Work & Volunteering | Harbourfront Centre — 3.6 km · ≈35 min transit | — | Toronto-only ring |
-| Date Night | And/Ore — 0.9 km · ≈13 min | Mandolin (now closed) — 16.6 km | **×18.8** |
+| Coffee | Misc Coffee — 0.7 km | Black & White 6.7 · Jubala 7.5 · Sola 10.2 km | **×11.6** |
+| Shopping | Walmart 1.1 · IKEA 3.3 · Metro 0.7 km | Food Lion 1.1 · Target 4.5 km | **×1.6** |
+| Daily Life | Harbourfront Centre 3.6 · Middle School 1.2 km | Middle School 0.7 km | **×0.3** |
+| Date Night | And/Ore 0.9 km | Mandolin 16.6 km (closed) | **×18.8** |
+| Fun & Games | Royal Ontario Museum 2.9 km | Science Museum 18.8 km | **×6.5** |
 
 No addresses are displayed or stored — only names. See `skill.md` for the
 full design rationale and conventions.
@@ -65,8 +65,9 @@ python3 tools/build.py            # rebuild + print all derived stats
 python3 tools/build.py --check    # validate data without writing
 ```
 
-The build computes every number — haversine distances, bearings, aggregates —
-so nothing is ever hand-typed twice. Pixel geometry, zooming and per-category
+The build computes distances, bearings, and aggregates from the source data.
+Supplied `distanceKm` values take precedence when coordinates are unknown.
+Pixel geometry, zooming and per-category
 rescoping are computed at runtime in `app.js` from the same derived numbers.
 `skill.md` §4 has a complete worked example (adding a stop).
 
@@ -84,8 +85,17 @@ zooming or filtering never changes how you travel.
 | Harbourfront Centre | transit | 35 |
 | And/Ore | walk | 13 |
 | IKEA | transit | 35 |
+| Middle School | walk | 15 |
+| Metro | walk | 7 |
+| Royal Ontario Museum | transit | 35 |
 
-Raleigh destinations all use `drive` and keep their original estimates.
+Raleigh keeps its original driving estimates, adds Science Museum at approximately
+30 minutes driving, and makes Middle School an explicit walking exception:
+0.7 km and 10 minutes. Toronto Middle School is 1.2 km / 15 minutes walking;
+Metro is 0.7 km / 7 minutes walking. These user-supplied radii use `distanceKm`
+without invented coordinates. Route and bearing rows hide when unknown.
+Changing to a mode without stored minutes requires an approximate `routeKm`
+for the fallback model.
 Walking and driving estimates are stored as `walkingMinutes` and
 `drivingMinutes` inside each stop's `travel` object. A mode change uses
 that mode's own value, so an old walking time never becomes a transit time.
@@ -94,7 +104,11 @@ Add `transitMinutes` for a known typical transit trip; it overrides the model.
 Current transit times are **approximate Google Maps lookups**, checked on
 11 October 2026 using Trinity Bellwoods Park as a public neighbourhood proxy
 rather than sharing exact home coordinates. The suggested journeys were 34
-minutes to Harbourfront and 33 to IKEA; both are rounded to **35 minutes**.
+minutes to Harbourfront, 33 to IKEA, and 33 to the Royal Ontario Museum;
+all are rounded to **35 minutes**. Science Museum means the NC Museum of
+Natural Sciences downtown. Google Maps returned **30 minutes driving** from
+Food Lion at Crenshaw Corners, a public northern-area proxy. The ROM and
+science museum radii still use the existing home coordinates locally.
 Per-stop `travel.source` records provider, lookup date, public origin, and
 observed minutes. These are representative snapshots, not live arrivals or
 exact trips from the home dot. Departure time and service can change them.
@@ -178,3 +192,10 @@ Chrome / Edge / Firefox / Safari, current + previous major version.
 Uses `color-mix()` (2023+) for one hover nicety — degrades to the base border.
 Respects `prefers-reduced-motion`; `?reveal=now` renders the final state
 instantly (useful for screenshots & embeds).
+
+## Museum location sources
+
+- Royal Ontario Museum. (n.d.). [Location & parking](https://www.rom.on.ca/visit/location-parking).
+- North Carolina Museum of Natural Sciences. (n.d.). [Directions and parking](https://www.naturalsciences.org/visit/directions-parking).
+- Mapcarta. (n.d.). [Royal Ontario Museum](https://mapcarta.com/25576818) and [North Carolina Museum of Natural Sciences](https://mapcarta.com/W197842115). Coordinates based on OpenStreetMap.
+- Google Maps. (2026, October 11). Museum route estimates from the public neighbourhood landmarks recorded in `travel.source`.

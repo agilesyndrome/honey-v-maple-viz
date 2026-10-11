@@ -71,6 +71,17 @@ def hav_km(a, b) -> float:
     return 2 * EARTH_KM * math.asin(math.sqrt(h))
 
 
+def stop_km(home, stop) -> float:
+    """Use a supplied radius when coordinates are unknown; never invent a location."""
+    value = stop.get("distanceKm")
+    if value is None:
+        return round(hav_km(home, stop), 3)
+    if (not isinstance(value, (int, float)) or isinstance(value, bool)
+            or not math.isfinite(value) or value <= 0):
+        raise ValueError(f"stop {stop['key']}: distanceKm must be finite and positive")
+    return value
+
+
 def bearing_deg(a, b) -> float:
     lat1, lat2 = math.radians(a["lat"]), math.radians(b["lat"])
     dlon = math.radians(b["lon"] - a["lon"])
@@ -125,17 +136,20 @@ def travel_time(s: dict, defaults: dict) -> dict:
                 or (value < 0 if allow_zero else value <= 0)):
             raise ValueError(f"stop {s['key']}: {label} must be a finite {'nonnegative' if allow_zero else 'positive'} number")
         return value
-    route = number(s["routeKm"], "routeKm")
+    # A known trip time does not require an invented route length.
+    route = number(s["routeKm"], "routeKm") if s.get("routeKm") is not None else None
     override = travel.get({"walk": "walkingMinutes", "drive": "drivingMinutes",
                            "transit": "transitMinutes"}[mode])
     detail = "Stored trip estimate."
     if override is not None:
         minutes = number(override, "mode-specific minutes")
         source = travel.get("source")
-        if source and mode == "transit":
+        if source:
             detail = (f"Approximate {source['provider']} trip from {source['originLabel']} "
                       f"(neighbourhood proxy), checked {source['checkedOn']}. "
                       "Rounded to 5 minutes; actual departure and service may vary.")
+    elif route is None:
+        raise ValueError(f"stop {s['key']}: supply routeKm or mode-specific minutes")
     elif mode == "transit":
         access = min(route, number(travel.get("accessKm", defaults["transitAccessKm"]), "accessKm", True))
         wait = number(travel.get("waitMinutes", defaults["transitWaitMinutes"]), "waitMinutes", True)
@@ -164,7 +178,7 @@ def build_hm(raw: dict) -> dict:
             "ringMinutes": chart["ringMinutes"], "timeViewStops": chart["timeViewStops"],
             "aria": ("Distance and time compass around Home: rings double outward as the scope grows; "
                      "Toronto stops in the north half (walking and transit), Raleigh stops in the south half "
-                     "(driven). Scroll to zoom, drag to roam."),
+                     "(mostly driving, with a walk to school). Scroll to zoom, drag to roam."),
         },
         "meta": raw["meta"],
         "cities": {}, "stops": [], "categories": raw["categories"],
@@ -183,7 +197,7 @@ def build_hm(raw: dict) -> dict:
     for s in raw["stops"]:
         city = hm["cities"][s["city"]]
         home = city["home"]
-        km = round(hav_km(home, s), 3)
+        km = stop_km(home, s)
         cat = next(cat for cat in raw["categories"] if cat["key"] == s["category"])
         timing = travel_time(s, raw["travelDefaults"])
         mode_word = {"walk": "walking", "drive": "driving", "transit": "by public transit"}[timing["travelMode"]]
@@ -192,11 +206,11 @@ def build_hm(raw: dict) -> dict:
             "category": s["category"], "catLabel": cat["label"], "glyph": cat["glyph"],
             "km": km,
             "angle": s["angle"], "labelDir": s["labelDir"],
-            "routeKm": s["routeKm"], "travel": s["travel"], **timing,
-            "bearingText": compass_text(bearing_deg(home, s)),
+            "routeKm": s.get("routeKm"), "travel": s["travel"], **timing,
+            "bearingText": compass_text(bearing_deg(home, s)) if "lat" in s and "lon" in s else None,
             "distStr": u2(km),
             "distShort": {"km": f"{fkm(km)} km", "mi": f"{fmi(km)} mi"},
-            "routeStr": {"km": f"≈ {fkm(s['routeKm'])} km", "mi": f"≈ {fmi(s['routeKm'])} mi"},
+            "routeStr": {"km": f"≈ {fkm(s['routeKm'])} km", "mi": f"≈ {fmi(s['routeKm'])} mi"} if s.get("routeKm") is not None else None,
             "ghostLabel": {"km": f"{fkm(km)} km", "mi": f"{fmi(km)} mi"},
             "aria": esc(f"{s['name']}, {city['name']} — {fkm(km)} km ({fmi(km)} mi) "
                         f"straight-line from home, about {timing['minutes']} minutes {mode_word}."),
@@ -245,6 +259,7 @@ CHIP_ICONS_HTML = {
     "cart": '<svg width="12" height="12" viewBox="0 0 14 14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2,3.5 h9.6 l-1.4,4.2 H4.2 z M4.2,7.7 v2.3 M9.6,7.7 v2.3"/></g></svg>',
     "case": '<svg width="12" height="12" viewBox="0 0 14 14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M2.4,4.8 h9.2 v5.6 a1.4,1.4 0 0 1 -1.4,1.4 h-6.4 a1.4,1.4 0 0 1 -1.4,-1.4 z"/><path d="M5.2,4.8 v-1 a1.2,1.2 0 0 1 1.2,-1.2 h1.2 a1.2,1.2 0 0 1 1.2,1.2 v1"/></g></svg>',
     "date": '<svg width="12" height="12" viewBox="0 0 14 14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.2,2.8 h7.6 v1.4 a3.8,3.8 0 0 1 -7.6,0 z"/><path d="M7,8 v2.2 M4.4,11.8 h5.2"/></g></svg>',
+    "game": '<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4.3,3.5 h5.4 q1.4,0 1.8,1.5 l.9,3.6 q.3,1.7-1.2,1.1 l-2.1-1.5 H4.9 l-2.1,1.5 q-1.5,.6-1.2-1.1 l.9-3.6 q.4-1.5 1.8-1.5z"/><path d="M3.4,6 h2.2 M4.5,4.9 v2.2"/></g><circle cx="9.6" cy="5.8" r=".8" fill="currentColor"/></svg>',
 }
 
 
@@ -367,7 +382,7 @@ def render(raw: dict) -> str:
     </h1>
     <p class="hm-lede hm-an" style="--d:.34s">
       <b class="hm-maple-ink">Toronto on foot or by transit.</b>
-      <b class="hm-honey-ink">Raleigh behind the wheel.</b>
+      <b class="hm-honey-ink">Raleigh mostly by car.</b>
       Everyday journeys, compared from home.
     </p>
   </header>
@@ -438,7 +453,7 @@ def validate(raw: dict, hm: dict) -> list:
             issues.append(f"stop {s['key']}: angle {a}° falls in the SOUTH half but {s['city']} is north")
         if hemi == "south" and not (90 <= a <= 270):
             issues.append(f"stop {s['key']}: angle {a}° falls in the NORTH half but {s['city']} is south")
-        for req in ("routeKm", "minutes", "timeNote", "note", "travelMode"):
+        for req in ("minutes", "timeNote", "note", "travelMode"):
             if s.get(req) in (None, ""):
                 issues.append(f"stop {s['key']}: missing {req}")
         if s["km"] > NICE_VIEWS[-1]:
@@ -467,11 +482,12 @@ def main() -> int:
     for i in issues:
         print("⚠ ", i)
 
-    print("── derived straight-line distances ──")
+    print("── derived and supplied distances ──")
     for s in hm["stops"]:
         city = hm["cities"][s["city"]]
         print(f"  {s['name']:<20} {city['name']:<9} {s['km']:>6} km ({fmi(s['km'])} mi) "
-              f"route ≈{s['routeKm']} km · {s['timeNote']} · {s['bearingText']}"
+              + (f"route ≈{s['routeKm']} km · " if s['routeKm'] is not None else "")
+              + f"{s['timeNote']}" + (f" · {s['bearingText']}" if s['bearingText'] else "")
               + ("  [closed]" if s.get("status") == "closed" else ""))
     print("── aggregates ──")
     for k in ("toronto", "raleigh"):
@@ -486,7 +502,9 @@ def main() -> int:
         if p["t_min"] is not None and p["r_min"] is not None:
             modes = "/".join(sorted({s["travelMode"] for s in hm["stops"]
                                     if s["category"] == ck and s["city"] == "toronto"}))
-            line += f"  · {p['t_min']} min {modes} vs {p['r_min']} min drive"
+            r_modes = "/".join(sorted({s["travelMode"] for s in hm["stops"]
+                                      if s["category"] == ck and s["city"] == "raleigh"}))
+            line += f"  · {p['t_min']} min {modes} vs {p['r_min']} min {r_modes}"
         print(line)
     print(f"  all-stops view {agg['viewAll']} km")
 

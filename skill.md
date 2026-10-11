@@ -26,8 +26,8 @@ pans it, and a scope badge reports the current radius.
 - **Rings double outward** (0.5 · 1 · 2 · 4 · 8 · 16 · 32 km). The visible
   ladder re-derives from the current scope: tiny rings hide under Home's
   halo, huge ones only appear when you zoom out.
-- **The category picker rescopes the map.** Coffee / Everyday Essentials /
-  Work & Volunteering / Date Night / All stops. Choosing one *hides* every
+- **The category picker rescopes the map.** Coffee / Shopping /
+  Daily Life / Date Night / Fun & Games / All stops. Choosing one *hides* every
   other stop (`hm-hid`, they disappear entirely) and tweens the view to the
   smallest "nice" scope that fits the selection (×1.15 padding, snapped to
   the `chart.viewStops` ladder). "All stops" fits the widest stop — which is
@@ -43,7 +43,7 @@ pans it, and a scope badge reports the current radius.
 - Toronto walking stops: paths are **dotted, gently curved** — the amble of a
   sidewalk route.
 - Toronto transit stops: **paired straight lines** with a moving centre dash.
-- Raleigh (we drive): paths are **ruled case lines with flowing dashes** —
+- Raleigh driving stops: paths are **ruled case lines with flowing dashes** —
   highway texture.
 
 **The story the real numbers tell** (this is why the chart exists):
@@ -52,7 +52,8 @@ pans it, and a scope badge reports the current radius.
 - The **coffee run is an order of magnitude apart** — Misc 0.70 km vs a
   Raleigh coffee scene that starts at 6.7 km and reaches 10.2 km (×11.6 on
   average).
-- Harbourfront Centre (Elijah's volunteer post) is a **Toronto-only ring**.
+- Daily Life pairs the school walks in both cities with Harbourfront Centre
+  (Elijah's Toronto volunteer post).
 - **Date night inverts the clock:** Toronto strolls 0.9 km to dinner in
   13 minutes; Raleigh drove 26 minutes to Mandolin — ×18.8, and the
   restaurant has since closed (kept on the map as a historical ring).
@@ -132,7 +133,7 @@ $CHROME --headless=new --no-sandbox --allow-file-access-from-files \
 `?reveal=now` skips the intro choreography (headless virtual time doesn't
 advance CSS transitions), landing instantly on the final state.
 
-The harness asserts: 11 stops + 11 paths drawn; chips rescope to exact
+The harness asserts: 16 stops + 16 paths drawn; chips rescope to exact
 scopes (coffee→12 km, essentials→6, work→5, date-night→20) and non-matching
 stops disappear; zoom buttons, wheel and drag-pan move the view; hover →
 tooltip + ghost ring at the exact km radius; click → pin (persists through
@@ -235,7 +236,7 @@ on screen.
 
 `travel.mode` on each stop is authoritative. Toronto initially assigns walks
 inside the original overview's first visible 2 km ring and transit outside;
-Raleigh is driving. Never infer mode from the current zoom or category.
+Raleigh initially used driving; Middle School is an authored walking exception. Never infer mode from the current zoom or category.
 `travelDefaults.initialTorontoWalkingRadiusKm` documents the original assignment,
 not a rule that overrides edits. `walkingMinutes`, `drivingMinutes`, and
 `transitMinutes` are independent optional mode-specific estimates.
@@ -261,9 +262,13 @@ at desktop and mobile sizes; its checks must fail on false assertion values.
   If that ever bothers us, a "true bearings" toggle would be more literal
   but less legible.
 - The overview will always be dominated by the widest stop (currently
-  Mandolin at 16.6 km — closed, kept for the story). Decluttering hides
+  Science Museum at 18.8 km). Decluttering hides
   near-home labels at that scope; zoom or pick a category to read them.
 - Drive times are free-flow; real traffic would widen Raleigh's times.
 - Natural next steps: per-category URL hash (shareable scopes), a "tour"
   mode that visits each category in sequence, and a print/poster export
   mode (white background).
+
+`distanceKm` preserves user-supplied radii without fabricated coordinates.
+School stops and Metro use it. `routeKm` is optional when the selected mode has
+stored minutes; unknown bearings and route distances stay out of the tooltip.

@@ -1,8 +1,8 @@
 {
-  "schema": "honey-maple/4",
+  "schema": "honey-maple/5",
   "meta": {
     "title": "Honey ✕ Maple — Two Homes, One Circle",
-    "description": "Compare everyday distances and estimated travel minutes from our front doors in Toronto (walking and transit) vs Raleigh (driving). Names only — never addresses."
+    "description": "Compare everyday distances and estimated travel minutes from Toronto (walking and transit) and Raleigh (mostly driving, with a walk to school). Names only — never addresses."
   },
   "chart": {
     "viewBox": 840,
@@ -90,11 +90,11 @@
       "accent": "#ffb45c",
       "soft": "#ffd08a",
       "mode": "drive",
-      "verb": "we drive",
-      "badge": "We drive everywhere",
+      "verb": "we mostly drive",
+      "badge": "Mostly by car · school on foot",
       "hemisphere": "south",
-      "tagline": "RALEIGH · SOUTH — WE DRIVE",
-      "note": "Even “just down the road” starts with a car key — and the good coffee lives a highway away.",
+      "tagline": "RALEIGH · SOUTH — WALK & DRIVE",
+      "note": "Most trips start with a car key; middle school is a short walk.",
       "home": {
         "label": "Home",
         "lat": 35.94161,
@@ -117,11 +117,11 @@
     },
     {
       "key": "essentials",
-      "label": "Everyday Essentials",
+      "label": "Shopping",
       "glyph": "cart",
       "metric": {
-        "scope": "essentials",
-        "title": "The essentials gap",
+        "scope": "shopping",
+        "title": "The shopping gap",
         "flavor": "Same cart of stuff — down south it comes with a parking lot.",
         "widestFlavor": "The big-box run still crosses most of Toronto.",
         "minutesFlavor": "A walk or transit ride up north; a drive down south."
@@ -129,14 +129,14 @@
     },
     {
       "key": "work",
-      "label": "Work & Volunteering",
+      "label": "Daily Life",
       "glyph": "case",
       "metric": {
-        "scope": "work & volunteering",
-        "title": "A Toronto-only ring",
-        "soloFlavor": "Raleigh has nothing in this circle yet.",
-        "widestFlavor": "The volunteer post holds the whole map.",
-        "minutesFlavor": "No Raleigh counterpart to compare."
+        "scope": "daily life",
+        "title": "The daily-life gap",
+        "flavor": "School and volunteering, measured from the same doorstep.",
+        "widestFlavor": "School walks share a circle with the volunteer trip.",
+        "minutesFlavor": "Daily routines, compared in minutes."
       }
     },
     {
@@ -149,6 +149,18 @@
         "flavor": "Up north the night out is a stroll; down south it’s a road trip.",
         "widestFlavor": "A closed chapter keeps the widest ring of all.",
         "minutesFlavor": "The one errand where the stroll wins — dinner is closer on foot than by car."
+      }
+    },
+    {
+      "key": "fun-games",
+      "label": "Fun & Games",
+      "glyph": "game",
+      "metric": {
+        "scope": "fun & games",
+        "title": "The fun & games gap",
+        "flavor": "A museum day in two cities.",
+        "widestFlavor": "The same curiosity, a different journey.",
+        "minutesFlavor": "Transit in Toronto; driving in Raleigh."
       }
     }
   ],
@@ -202,7 +214,7 @@
       "routeKm": 4.4,
       "angle": 70,
       "labelDir": "left",
-      "note": "A Toronto-only ring — Elijah’s volunteer post; Raleigh has nothing out here yet.",
+      "note": "Elijah’s volunteer post — part of daily life, alongside the walk to school.",
       "travel": {
         "mode": "transit",
         "walkingMinutes": 50,
@@ -353,6 +365,100 @@
       "travel": {
         "mode": "drive",
         "drivingMinutes": 26
+      }
+    },
+    {
+      "key": "school-raleigh",
+      "city": "raleigh",
+      "name": "Middle School",
+      "category": "work",
+      "distanceKm": 0.7,
+      "distanceSource": "user",
+      "angle": 170,
+      "labelDir": "right",
+      "note": "The school run is a ten-minute walk, even in Raleigh.",
+      "travel": {
+        "mode": "walk",
+        "walkingMinutes": 10
+      }
+    },
+    {
+      "key": "school-toronto",
+      "city": "toronto",
+      "name": "Middle School",
+      "category": "work",
+      "distanceKm": 1.2,
+      "distanceSource": "user",
+      "angle": 280,
+      "labelDir": "left",
+      "note": "A fifteen-minute walk to middle school.",
+      "travel": {
+        "mode": "walk",
+        "walkingMinutes": 15
+      }
+    },
+    {
+      "key": "metro",
+      "city": "toronto",
+      "name": "Metro",
+      "category": "essentials",
+      "distanceKm": 0.7,
+      "distanceSource": "user",
+      "angle": 350,
+      "labelDir": "left",
+      "note": "Groceries, seven minutes from home on foot.",
+      "travel": {
+        "mode": "walk",
+        "walkingMinutes": 7
+      }
+    },
+    {
+      "key": "rom",
+      "city": "toronto",
+      "name": "Royal Ontario Museum",
+      "category": "fun-games",
+      "lat": 43.66771,
+      "lon": -79.39469,
+      "angle": 305,
+      "labelDir": "left",
+      "note": "A museum day by public transit.",
+      "locationSource": "https://mapcarta.com/25576818",
+      "travel": {
+        "mode": "transit",
+        "transitMinutes": 35,
+        "source": {
+          "provider": "Google Maps",
+          "originLabel": "Trinity Bellwoods Park",
+          "originKind": "public-neighbourhood-proxy",
+          "checkedOn": "2026-10-11",
+          "observedMinutes": 33,
+          "roundedToMinutes": 5
+        }
+      }
+    },
+    {
+      "key": "science-museum",
+      "city": "raleigh",
+      "name": "Science Museum",
+      "category": "fun-games",
+      "lat": 35.78219,
+      "lon": -78.63951,
+      "angle": 235,
+      "labelDir": "left",
+      "note": "The NC Museum of Natural Sciences in downtown Raleigh — a museum day by car.",
+      "locationSource": "https://mapcarta.com/W197842115",
+      "travel": {
+        "mode": "drive",
+        "drivingMinutes": 30,
+        "source": {
+          "provider": "Google Maps",
+          "originLabel": "Food Lion, Crenshaw Corners",
+          "originKind": "public-neighbourhood-proxy",
+          "checkedOn": "2026-10-11",
+          "observedMinutes": 30,
+          "observedRouteKm": 25.3,
+          "roundedToMinutes": 5
+        }
       }
     }
   ],

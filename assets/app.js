@@ -81,6 +81,8 @@ const ICONS = {
        + '<path d="M-1.7,-1.6 v-1 a1.1,1.1 0 0 1 1.1,-1.1 h1.2 a1.1,1.1 0 0 1 1.1,1.1 v1" fill="none" stroke-width="1.2"/>',
   date: '<path d="M-2.8,-4.4 h5.6 v1.7 a2.8,2.8 0 0 1 -5.6,0 z" fill="none" stroke-width="1.1"/>'
        + '<path d="M0,-0.6 v3.4 M-1.8,3.9 h3.6" fill="none" stroke-width="1.1"/>',
+  game: '<path d="M-2.6,-2.6 h5.2 q1.4,0 1.7,1.5 l.8,3.4 q.3,1.6-1.1,1 l-2-1.4 h-4 l-2,1.4 q-1.4,.6-1.1-1 l.8-3.4 q.3-1.5 1.7-1.5z" fill="none" stroke-width="1.2"/>'
+       + '<path d="M-3,-.3 h2 M-2,-1.3 v2" fill="none" stroke-width="1"/><circle cx="2.6" cy="-.5" r=".7"/>',
 };
 
 /* ---------- decorative skylines (pure ornament, presentation-only) ---------- */
@@ -552,9 +554,9 @@ function tipHtml(st) {
     + esc(dispName(st)) + '<span class="hm-tip-cat">' + esc(st.catLabel) + '</span></div>'
     + '<div class="hm-tip-rows">'
     + (MEASURE === 'distance' ? '<div class="hm-tip-row">Distance<b>' + st.distStr[UNIT] + '</b></div>'
-    + '<div class="hm-tip-row">Route<b>' + st.routeStr[UNIT] + '</b></div>' : '')
+    + (st.routeStr ? '<div class="hm-tip-row">Route<b>' + st.routeStr[UNIT] + '</b></div>' : '') : '')
     + '<div class="hm-tip-row">' + modeLabel(st) + '<b>' + esc(st.timeNote) + '</b></div>'
-    + '<div class="hm-tip-row">Bearing<b>' + esc(st.bearingText) + '</b></div>'
+    + (st.bearingText ? '<div class="hm-tip-row">Bearing<b>' + esc(st.bearingText) + '</b></div>' : '')
     + (st.status === 'closed' ? '<div class="hm-tip-row">Status<b>now closed</b></div>' : '')
     + '</div>'
     + '<div class="hm-tip-estimate">' + esc(st.timeDetail) + '</div>'
@@ -662,7 +664,7 @@ function renderMetrics() {
     animNum(num3a, t, 0, '');
     animNum(num3b, r, 0, '');
     arrow3.style.display = '';
-    p3.innerHTML = 'Toronto → Raleigh · ' + modesOf(T) + ' vs driving.';
+    p3.innerHTML = 'Toronto → Raleigh · ' + modesOf(T) + ' vs ' + modesOf(R) + '.';
   } else {
     const solo = T.length ? T : R;
     const mode = modesOf(solo);

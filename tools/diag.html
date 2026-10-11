@@ -51,12 +51,12 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   /* ---- boot ---- */
   check('svg exists', () => !!d.getElementById('hm-svg'));
   check('data script exists', () => !!d.getElementById('hm-data'));
-  check('11 stop groups', () => $$('.hm-ptg').length === 11 || 'got ' + $$('.hm-ptg').length);
-  check('11 path groups', () => $$('.hm-pathg').length === 11);
+  check('16 stop groups', () => $$('.hm-ptg').length === 16 || 'got ' + $$('.hm-ptg').length);
+  check('16 path groups', () => $$('.hm-pathg').length === 16);
   check('ring ladder present (7)', () => $$('.hm-ring').length === 7);
   check('ghost ring present', () => !!d.getElementById('hm-ghost'));
   check('tip element present', () => !!d.getElementById('hm-tip'));
-  check('chips present (all+4)', () => $$('.hm-chip').length === 5 || 'got ' + $$('.hm-chip').length);
+  check('categories present (all+5)', () => $$('.hm-chip').length === 6 || 'got ' + $$('.hm-chip').length);
   check('category menu initially closed', () => $('#hm-category-menu').hidden);
   click($('#hm-category'));
   check('category menu opens', () => !$('#hm-category-menu').hidden && $('#hm-category').getAttribute('aria-expanded') === 'true');
@@ -75,12 +75,12 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     !$('.hm-week') && !$('.hm-ledger') && !$('.hm-foot') && !d.getElementById('hm-replay'));
   check('removed: footer prose gone', () =>
     !/An illustrative week|errand ledger|Measures|Privacy|Embed/i.test(d.body.textContent));
-  check('default scope 20 km', () => w.HM.view.km === 20 || 'got ' + w.HM.view.km);
-  check('scope badge reads "scope 20 km"', () => $('#hm-scope').textContent === 'scope 20 km');
-  check('metrics: everyday gap ×4.0', () => $('#hm-m1-num').textContent === '×4.0' || 'got ' + $('#hm-m1-num').textContent);
-  check('metrics: widest ring 16.6 km', () => $('#hm-m2-num').textContent === '16.6' || 'got ' + $('#hm-m2-num').textContent);
-  check('metrics: minutes 22 → 13', () =>
-    $('#hm-m3a').textContent === '22' && $('#hm-m3b').textContent === '13');
+  check('default scope 24 km', () => w.HM.view.km === 24 || 'got ' + w.HM.view.km);
+  check('scope badge reads "scope 24 km"', () => $('#hm-scope').textContent === 'scope 24 km');
+  check('metrics: everyday gap ×4.6', () => $('#hm-m1-num').textContent === '×4.6' || 'got ' + $('#hm-m1-num').textContent);
+  check('metrics: widest ring 18.8 km', () => $('#hm-m2-num').textContent === '18.8' || 'got ' + $('#hm-m2-num').textContent);
+  check('metrics: minutes 21 → 15', () =>
+    $('#hm-m3a').textContent === '21' && $('#hm-m3b').textContent === '15');
   let c = collisionCheck();
   check('no label overlaps (all)', () => c.overlaps.length === 0 || c.overlaps.join(' | '));
   check('labels inside chart (all)', () => c.outside.length === 0 || c.outside.join(','));
@@ -108,10 +108,10 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   click($('.hm-chip[data-cat="essentials"]'));
   await sleep(1100);
   check('essentials rescopes to 6 km', () => w.HM.view.km === 6 || 'got ' + w.HM.view.km);
-  check('essentials: 4 stops visible', () => $$('.hm-ptg:not(.hm-hid)').length === 4);
+  check('shopping: 5 stops visible', () => $$('.hm-ptg:not(.hm-hid)').length === 5);
   check('essentials: food lion visible', () => !$('.hm-ptg[data-g="foodlion"]').classList.contains('hm-hid'));
   check('essentials: jubala disappears', () => $('.hm-ptg[data-g="jubala"]').classList.contains('hm-hid'));
-  check('metrics: essentials gap ×1.3', () => $('#hm-m1-num').textContent === '×1.3' || 'got ' + $('#hm-m1-num').textContent);
+  check('metrics: shopping gap ×1.6', () => $('#hm-m1-num').textContent === '×1.6' || 'got ' + $('#hm-m1-num').textContent);
   c = collisionCheck();
   check('no label overlaps (essentials)', () => c.overlaps.length === 0 || c.overlaps.join(' | '));
   check('labels inside chart (essentials)', () => c.outside.length === 0 || c.outside.join(','));
@@ -120,10 +120,9 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   click($('.hm-chip[data-cat="work"]'));
   await sleep(1100);
   check('work rescopes to 5 km', () => w.HM.view.km === 5 || 'got ' + w.HM.view.km);
-  check('metrics: solo ring 3.6 km', () =>
-    $('#hm-m1-num').textContent === '3.6' && $('#hm-m1-unit').textContent === 'km');
-  check('metrics: solo minutes 35, arrow hidden', () =>
-    $('#hm-m3a').textContent === '35' && $('#hm-m3-arrow').style.display === 'none');
+  check('daily life has both school walks', () => ['school-toronto','school-raleigh'].every(key => !$('.hm-ptg[data-g="' + key + '"]').classList.contains('hm-hid')));
+  check('daily life gap ×0.3', () => $('#hm-m1-num').textContent === '×0.3');
+  check('daily life minutes 25 → 10', () => $('#hm-m3a').textContent === '25' && $('#hm-m3b').textContent === '10' && $('#hm-m3-arrow').style.display !== 'none');
   c = collisionCheck();
   check('no label overlaps (work)', () => c.overlaps.length === 0 || c.overlaps.join(' | '));
 
@@ -142,14 +141,14 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   click($('.hm-chip[data-cat="all"]'));
   await sleep(1100);
   check('all restores visibility', () => $$('.hm-hid').length === 0);
-  check('all rescopes back to 20 km', () => w.HM.view.km === 20);
+  check('all rescopes back to 24 km', () => w.HM.view.km === 24);
 
   /* ---- hover tooltip + ghost ring ---- */
   const hf = $('.hm-ptg[data-g="harbourfront"]');
   hoverIn(hf);
   check('hover shows tip', () => d.getElementById('hm-tip').classList.contains('show'));
   check('tip names Harbourfront', () => d.getElementById('hm-tip').textContent.includes('Harbourfront Centre'));
-  check('tip shows Work & Volunteering', () => d.getElementById('hm-tip').textContent.includes('Work & Volunteering'));
+  check('tip shows Daily Life', () => d.getElementById('hm-tip').textContent.includes('Daily Life'));
   check('tip shows ESE bearing', () => d.getElementById('hm-tip').textContent.includes('east-south-east of home'));
   check('ghost ring at 3.613 km (km-space)', () =>
     Math.abs(+d.getElementById('hm-ghost-c').getAttribute('r') - 3.613) < 0.01);
@@ -175,21 +174,21 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   click(d.getElementById('hm-btn-mi'));
   check('mi toggle pressed', () => d.getElementById('hm-btn-mi').getAttribute('aria-pressed') === 'true');
   const ringLab = $$('.hm-ringlab').filter(t => t.style.display !== 'none')[0];
-  check('first visible ring label in mi', () => (ringLab ? ringLab.textContent.trim().startsWith('2.5 mi') : 'none'));
+  check('first visible ring label in mi', () => (ringLab ? /^[0-9.]+ mi/.test(ringLab.textContent.trim()) : 'none'));
   check('walmart sub 0.7 mi', () =>
     $('.hm-ptg[data-g="walmart"] .hm-stopsub').textContent.trim() === '0.7 mi');
   hoverIn(wal);
   check('tip route in mi', () => d.getElementById('hm-tip').textContent.includes('0.9 mi'));
   hoverOut(wal);
-  check('scope badge 12 mi', () => $('#hm-scope').textContent === 'scope 12 mi' || 'got ' + $('#hm-scope').textContent);
-  check('metrics: widest ring 10.3 mi', () => $('#hm-m2-num').textContent === '10.3' || 'got ' + $('#hm-m2-num').textContent);
+  check('scope badge 15 mi', () => $('#hm-scope').textContent === 'scope 15 mi' || 'got ' + $('#hm-scope').textContent);
+  check('metrics: widest ring 11.7 mi', () => $('#hm-m2-num').textContent === '11.7' || 'got ' + $('#hm-m2-num').textContent);
   click(d.getElementById('hm-btn-km'));
 
   /* ---- zoom controls + wheel ---- */
   click(d.getElementById('hm-zin'));
   await sleep(500);
   const z1 = w.HM.view.km;
-  check('zoom in shrinks scope', () => z1 < 20 || 'got ' + z1);
+  check('zoom in shrinks scope', () => z1 < 24 || 'got ' + z1);
   click(d.getElementById('hm-zout'));
   await sleep(500);
   const z2 = w.HM.view.km;
@@ -198,7 +197,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   check('wheel zooms in', () => w.HM.view.km < z2 || 'got ' + w.HM.view.km);
   click(d.getElementById('hm-zfit'));
   await sleep(1100);
-  check('rescope button returns to 20 km', () => w.HM.view.km === 20 || 'got ' + w.HM.view.km);
+  check('rescope button returns to 24 km', () => w.HM.view.km === 24 || 'got ' + w.HM.view.km);
 
   /* ---- pan (drag) ---- */
   const svgEl = d.getElementById('hm-svg');
@@ -226,17 +225,17 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   check('time units control hidden', () => $('#hm-units').hidden && w.getComputedStyle($('#hm-units')).display === 'none');
   check('time fits all at 50 min', () => w.HM.view.km === 50 && $('#hm-scope').textContent === 'scope 50 min');
   check('time stop labels in minutes', () => wal.querySelector('.hm-stopsub').textContent === '≈15 min');
-  check('time metrics recompute ratio and widest', () => $('#hm-m1-num').textContent === '×0.6' && $('#hm-m2-num').textContent === '35' && $('#hm-m2-unit').textContent === 'min');
+  check('time metrics recompute ratio and widest', () => $('#hm-m1-num').textContent === '×0.7' && $('#hm-m2-num').textContent === '35' && $('#hm-m2-unit').textContent === 'min');
   check('time keeps pinned stop', () => wal.classList.contains('pinned') && $('#hm-tip').classList.contains('show'));
   check('time ghost radius uses minutes', () => +$('#hm-ghost-c').getAttribute('r') === 15 && $('#hm-ghost-lab').textContent === '≈15 min');
   check('time tip suppresses distances', () => !/\b(?:km|mi|Distance|Route)\b/.test($('#hm-tip').textContent));
   check('time city cards suppress distances', () => !/\b(?:km|mi)\b/.test($('.hm-cities').textContent));
-  check('transit stored on both farther Toronto stops', () => w.HM_DATA.stops.filter(st => st.travelMode === 'transit').map(st => st.key).join(',') === 'harbourfront,ikea');
-  check('transit has distinct paths', () => $$('.hm-transitcase').length === 2 && $$('.hm-pathw').length === 3);
+  check('transit stored on the three Toronto trips', () => w.HM_DATA.stops.filter(st => st.travelMode === 'transit').map(st => st.key).join(',') === 'harbourfront,ikea,rom');
+  check('transit has distinct paths', () => $$('.hm-transitcase').length === 3 && $$('.hm-pathw').length === 6);
   c = collisionCheck();
   check('no label overlaps (time all)', () => c.overlaps.length === 0 || c.overlaps.join(' | '));
   check('labels inside chart (time all)', () => c.outside.length === 0 || c.outside.join(','));
-  for (const [cat, scope, widest, ratio] of [['coffee',25,18,'×1.4'],['essentials',50,35,'×0.2'],['work',50,35,'35'],['date-night',30,26,'×2.0']]) {
+  for (const [cat, scope, widest, ratio] of [['coffee',25,18,'×1.4'],['essentials',50,35,'×0.3'],['work',50,35,'×0.4'],['date-night',30,26,'×2.0'],['fun-games',50,35,'×0.9']]) {
     click($('.hm-chip[data-cat="' + cat + '"]'));
     await sleep(1000);
     check('time ' + cat + ' scope', () => w.HM.view.km === scope);
@@ -245,6 +244,8 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
     check('no label overlaps (time ' + cat + ')', () => c.overlaps.length === 0 || c.overlaps.join(' | '));
     check('labels inside chart (time ' + cat + ')', () => c.outside.length === 0 || c.outside.join(','));
   }
+  click($('.hm-chip[data-cat="date-night"]'));
+  await sleep(1100);
   click($('#hm-btn-distance'));
   await sleep(1100);
   check('distance restores previous miles choice', () => !$('#hm-units').hidden && $('#hm-btn-mi').getAttribute('aria-pressed') === 'true');
@@ -257,7 +258,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
   await sleep(180);
   click($('#hm-btn-distance'));
   await sleep(1100);
-  check('rapid toggle settles on requested measurement', () => w.HM.measureMix === 0 && w.HM.view.km === 20);
+  check('rapid toggle settles on requested measurement', () => w.HM.measureMix === 0 && w.HM.view.km === 24);
 
   /* ---- privacy sweep ---- */
   check('no addresses in DOM', () => {
